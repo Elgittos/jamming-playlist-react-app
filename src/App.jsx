@@ -1,28 +1,49 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Link } from 'react-router-dom'
 import RecentlyPlayed from './components/RecentlyPlayed'
+import YourPlaylist from './components/YourPlaylist'
+import PlayingNow from './components/PlayingNow'
+import SearchBar from './components/searchbar'
+import GenreSection from './components/GenreSection'
 
 function App() {
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async (query) => {
+    console.log('Searching for:', query);
+    // We'll implement the actual search API call next
+  };
 
   return (
 
-      <main className="min-h-screen bg-violet-950 flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-        <div className="bg-indigo-950 p-10 flex justify-center">
-          <h1 className="text-4xl font-bold">Jamming Playlist App</h1>
+      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8">
+        {/* Header with gradient and test button */}
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-10 rounded-2xl shadow-2xl">
+          <div className="flex justify-between items-center gap-6">
+            <h1 className="text-5xl font-bold text-white whitespace-nowrap">🎵 Jamming Playlist App</h1>
+            
+            {/* Search Bar */}
+            <SearchBar onSearch={handleSearch} />
+            
+            <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap">
+              Test Login
+            </Link>
+          </div>
         </div>
           
         <RecentlyPlayed />
 
         <div className="flex gap-6">
-          <div className="container mx-auto bg-green-950 flex justify-center p-10 h-150">
-            <h2 className="text-2xl font-bold">Your Playlist</h2>
-          </div>
-
-          <div className="container mx-auto bg-fuchsia-950 flex justify-center p-10 h-150">
-            <h2 className="text-2xl font-bold">Playing now</h2>
-          </div>
+          <YourPlaylist />
+          <PlayingNow />
         </div>
+
+        {/* Genre Sections */}
+        <GenreSection genre="Pop" gradientFrom="from-pink-900" gradientVia="via-rose-900" gradientTo="to-pink-950" />
+        <GenreSection genre="Rap" gradientFrom="from-orange-900" gradientVia="via-amber-900" gradientTo="to-orange-950" />
+        <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" />
+        <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" />
+        <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" />
       </main>
   )
 }

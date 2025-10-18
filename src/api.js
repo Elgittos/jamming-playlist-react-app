@@ -393,3 +393,72 @@ export async function addTracksToPlaylist(playlistId, trackUris) {
     throw error;
   }
 }
+
+/**
+ * Search for tracks, artists, and albums
+ * @param {string} query - Search query
+ * @param {number} limit - Number of results per type (default: 4)
+ */
+export async function searchSpotify(query, limit = 4) {
+  try {
+    const token = await getAccessToken();
+    
+    // Search for tracks, artists, and albums
+    const params = new URLSearchParams({
+      q: query,
+      type: 'track,artist,album',
+      limit: limit.toString()
+    });
+    
+    const response = await fetch(`https://api.spotify.com/v1/search?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('❌ Error searching Spotify:', error);
+    throw error;
+  }
+}
+
+/**
+ * Search for top tracks by genre
+ * @param {string} genre - Genre name
+ * @param {number} limit - Number of results (default: 10)
+ */
+export async function searchByGenre(genre, limit = 10) {
+  try {
+    const token = await getAccessToken();
+    
+    // Search for popular tracks in the genre
+    const params = new URLSearchParams({
+      q: `genre:${genre}`,
+      type: 'track',
+      limit: limit.toString(),
+      market: 'US'
+    });
+    
+    const response = await fetch(`https://api.spotify.com/v1/search?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.tracks.items;
+  } catch (error) {
+    console.error(`❌ Error searching genre ${genre}:`, error);
+    throw error;
+  }
+}
