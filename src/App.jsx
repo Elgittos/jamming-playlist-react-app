@@ -5,18 +5,28 @@ import YourPlaylist from './components/YourPlaylist'
 import PlayingNow from './components/PlayingNow'
 import SearchBar from './components/searchbar'
 import GenreSection from './components/GenreSection'
+import SpotifyPlayer from './components/SpotifyPlayer'
+import PlaylistsMenu from './components/PlaylistsMenu'
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
 
   const handleSearch = async (query) => {
     console.log('Searching for:', query);
     // We'll implement the actual search API call next
   };
 
+  const handlePlaylistSelect = (playlistId) => {
+    setSelectedPlaylistId(playlistId);
+  };
+
   return (
 
       <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8">
+        {/* Spotify Web Player */}
+        <SpotifyPlayer />
+        
         {/* Header with gradient and test button */}
         <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-10 rounded-2xl shadow-2xl">
           <div className="flex justify-between items-center gap-6">
@@ -33,9 +43,19 @@ function App() {
           
         <RecentlyPlayed />
 
-        <div className="flex gap-6">
-          <YourPlaylist />
-          <PlayingNow />
+        {/* Playlists Menu */}
+        <PlaylistsMenu 
+          onPlaylistSelect={handlePlaylistSelect}
+          selectedPlaylistId={selectedPlaylistId}
+        />
+
+        <div className="flex gap-6 w-full min-h-[600px]">
+          <div className="w-1/2">
+            <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
+          </div>
+          <div className="w-1/2">
+            <PlayingNow />
+          </div>
         </div>
 
         {/* Genre Sections */}

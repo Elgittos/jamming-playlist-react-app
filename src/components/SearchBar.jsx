@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchSpotify, isAuthenticated } from '../api';
+import { searchSpotify, isAuthenticated, playTrack } from '../api';
 
 function SearchBar({ onSearch }) {
   const [query, setQuery] = useState('');
@@ -64,12 +64,16 @@ function SearchBar({ onSearch }) {
     }
   };
 
-  const handleSuggestionClick = (item, type) => {
+  const handleSuggestionClick = async (item, type) => {
     // Handle different types of clicks
     if (type === 'track') {
-      console.log('Track selected:', item);
-      // Open in Spotify or add to playlist
-      window.open(item.external_urls.spotify, '_blank');
+      try {
+        await playTrack(item.uri);
+        console.log('Playing track:', item.name);
+      } catch (error) {
+        console.error('Failed to play:', error);
+        alert(error.message);
+      }
     } else if (type === 'artist') {
       console.log('Artist selected:', item);
       window.open(item.external_urls.spotify, '_blank');

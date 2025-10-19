@@ -13,7 +13,11 @@ const SCOPES = [
   'playlist-modify-private',
   'user-read-recently-played',
   'user-top-read',
-  'user-library-read'
+  'user-library-read',
+  'user-read-playback-state',
+  'user-read-currently-playing',
+  'user-modify-playback-state',
+  'streaming'
 ].join(' ');
 
 let accessToken = null;
@@ -289,7 +293,9 @@ export async function getRecentlyPlayed(limit = 20) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorBody = await response.text();
+      console.error('API Error Response:', errorBody);
+      throw new Error(`HTTP error! status: ${response.status} - ${errorBody}`);
     }
 
     const data = await response.json();
@@ -322,6 +328,41 @@ export async function getUserPlaylists(limit = 20) {
     return data.items;
   } catch (error) {
     console.error('❌ Error getting playlists:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get tracks from a specific playlist
+ * @param {string} playlistId - The Spotify playlist ID
+ */
+export async function getPlaylistTracks(playlistId) {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.items.map(item => ({
+      id: item.track.id,
+      name: item.track.name,
+      artists: item.track.artists.map(artist => artist.name).join(', '),
+      album: item.track.album.name,
+      albumImage: item.track.album.images[0]?.url,
+      duration: item.track.duration_ms,
+      uri: item.track.uri,
+      addedAt: item.added_at
+    }));
+  } catch (error) {
+    console.error('❌ Error getting playlist tracks:', error);
     throw error;
   }
 }
@@ -459,6 +500,256 @@ export async function searchByGenre(genre, limit = 10) {
     return data.tracks.items;
   } catch (error) {
     console.error(`❌ Error searching genre ${genre}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get currently playing track
+ * Returns null if nothing is playing
+ */
+export async function getCurrentlyPlaying() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204 || response.status === 404) {
+      // No track currently playing
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('❌ Error getting currently playing:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get current playback state (includes more info than currently-playing)
+ */
+export async function getPlaybackState() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204 || response.status === 404) {
+      // No active device or nothing playing
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('❌ Error getting playback state:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get available devices
+ */
+export async function getAvailableDevices() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.devices;
+  } catch (error) {
+    console.error('❌ Error getting devices:', error);
+    throw error;
+  }
+}
+
+/**
+ * Play a track or tracks
+ * @param {string|string[]} uris - Track URI(s) to play
+ * @param {string} deviceId - Optional device ID to play on
+ */
+export async function playTrack(uris, deviceId = null) {
+  try {
+    const token = await getAccessToken();
+    
+    // Use web player device if available
+    const targetDeviceId = deviceId || window.spotifyDeviceId;
+    
+    if (!targetDeviceId) {
+      throw new Error('Web player is still connecting... Please wait a moment and try again.');
+    }
+    
+    const url = `https://api.spotify.com/v1/me/player/play?device_id=${targetDeviceId}`;
+    const body = Array.isArray(uris) ? { uris } : { uris: [uris] };
+    
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (response.status === 204) {
+      return true; // Success
+    }
+    
+    if (response.status === 404) {
+      throw new Error('Device not found. The web player may still be connecting...');
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || `Failed to play (${response.status})`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error playing track:', error);
+    throw error;
+  }
+}
+
+/**
+ * Pause playback
+ */
+export async function pausePlayback() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/pause', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204) {
+      return true;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error pausing playback:', error);
+    throw error;
+  }
+}
+
+/**
+ * Resume playback
+ */
+export async function resumePlayback() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/play', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204) {
+      return true;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error resuming playback:', error);
+    throw error;
+  }
+}
+
+/**
+ * Skip to next track
+ */
+export async function skipToNext() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/next', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204) {
+      return true;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error skipping to next:', error);
+    throw error;
+  }
+}
+
+/**
+ * Skip to previous track
+ */
+export async function skipToPrevious() {
+  try {
+    const token = await getAccessToken();
+    
+    const response = await fetch('https://api.spotify.com/v1/me/player/previous', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204) {
+      return true;
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error skipping to previous:', error);
     throw error;
   }
 }
