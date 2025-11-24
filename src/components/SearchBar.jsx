@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { searchSpotify, isAuthenticated, playTrack } from '../api';
 
-function SearchBar({ onSearch }) {
+function SearchBar() {
   const [query, setQuery] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [suggestions, setSuggestions] = useState(null);

@@ -9,13 +9,7 @@ import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
 
 function App() {
-  const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
-
-  const handleSearch = async (query) => {
-    console.log('Searching for:', query);
-    // We'll implement the actual search API call next
-  };
 
   const handlePlaylistSelect = (playlistId) => {
     setSelectedPlaylistId(playlistId);
@@ -33,7 +27,7 @@ function App() {
             <h1 className="text-5xl font-bold text-white whitespace-nowrap">🎵 Jamming Playlist App</h1>
             
             {/* Search Bar */}
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar />
             
             <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap">
               Test Login
