@@ -1,8 +1,10 @@
 import { playTrack } from '../api';
+import { AudioSourceType } from '../audio';
 
 function SongCard({ song }) {
   const handlePlay = async () => {
-    if (song.uri) {
+    // Handle Spotify tracks with existing Spotify API
+    if (song.source === AudioSourceType.SPOTIFY && song.uri) {
       try {
         await playTrack(song.uri);
         console.log('Playing:', song.title);
@@ -10,6 +12,20 @@ function SongCard({ song }) {
         console.error('Failed to play track:', error);
         alert(error.message || 'Failed to play track. Make sure Spotify is open on a device.');
       }
+    } 
+    // Handle Openverse and RoyalFree with HTML5 audio
+    else if (song.audioUrl) {
+      try {
+        const audio = new Audio(song.audioUrl);
+        await audio.play();
+        console.log('Playing:', song.title);
+      } catch (error) {
+        console.error('Failed to play audio:', error);
+        alert('Failed to play audio. The audio file may not be available.');
+      }
+    }
+    else {
+      console.warn('No playable audio URL or URI available');
     }
   };
 

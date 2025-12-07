@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useAudioSearch, AudioSourceType } from '../audio';
 import { searchSpotify, isAuthenticated, playTrack } from '../api';
 
 function SearchBar() {
@@ -9,10 +10,13 @@ function SearchBar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const searchTimeoutRef = useRef(null);
+  
+  // Use new audio search hook for non-Spotify sources
+  const { results: audioResults, loading: audioLoading, searchAudio, currentSource } = useAudioSearch();
 
   // Fetch suggestions when query changes
   useEffect(() => {
-    if (!query.trim() || !isAuthenticated()) {
+    if (!query.trim()) {
       setSuggestions(null);
       setShowDropdown(false);
       return;
@@ -26,9 +30,22 @@ function SearchBar() {
     searchTimeoutRef.current = setTimeout(async () => {
       try {
         setIsLoading(true);
-        const results = await searchSpotify(query, 4);
-        setSuggestions(results);
-        setShowDropdown(true);
+
+        // Use new audio system for Openverse and RoyalFree
+        if (currentSource === AudioSourceType.OPENVERSE || currentSource === AudioSourceType.ROYALFREE) {
+          searchAudio(query, { pageSize: 4 });
+          // audioResults will be updated via hook
+        } else if (currentSource === AudioSourceType.SPOTIFY) {
+          // Use Spotify API for backward compatibility
+          if (!isAuthenticated()) {
+            setSuggestions(null);
+            setShowDropdown(false);
+            return;
+          }
+          const results = await searchSpotify(query, 4);
+          setSuggestions(results);
+          setShowDropdown(true);
+        }
       } catch (error) {
         console.error('Search error:', error);
         setSuggestions(null);
@@ -42,7 +59,35 @@ function SearchBar() {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [query]);
+  }, [query, currentSource, searchAudio]);
+
+  // Update dropdown when audioResults change
+  useEffect(() => {
+    if (currentSource === AudioSourceType.OPENVERSE || currentSource === AudioSourceType.ROYALFREE) {
+      if (audioResults.length > 0) {
+        // Convert audio results to suggestion format
+        setSuggestions({
+          tracks: {
+            items: audioResults.map(item => ({
+              id: item.id,
+              name: item.title,
+              artists: [{ name: item.artist }],
+              album: { 
+                name: item.title,
+                images: item.thumbnailUrl ? [{ url: item.thumbnailUrl }] : []
+              },
+              audioUrl: item.audioUrl,
+              source: item.source,
+            }))
+          }
+        });
+        setShowDropdown(true);
+      } else if (!audioLoading && query.trim()) {
+        setSuggestions({ tracks: { items: [] } });
+        setShowDropdown(true);
+      }
+    }
+  }, [audioResults, audioLoading, currentSource, query]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -59,8 +104,8 @@ function SearchBar() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query);
-      setShowDropdown(false);
+      // Just keep the dropdown open to show results
+      setShowDropdown(true);
     }
   };
 
@@ -68,18 +113,33 @@ function SearchBar() {
     // Handle different types of clicks
     if (type === 'track') {
       try {
-        await playTrack(item.uri);
-        console.log('Playing track:', item.name);
+        // Handle Spotify tracks
+        if (item.uri) {
+          await playTrack(item.uri);
+          console.log('Playing track:', item.name);
+        } 
+        // Handle Openverse/RoyalFree tracks with direct audio URL
+        else if (item.audioUrl) {
+          const audio = new Audio(item.audioUrl);
+          await audio.play();
+          console.log('Playing audio:', item.name);
+        } else {
+          throw new Error('No playable audio available');
+        }
       } catch (error) {
         console.error('Failed to play:', error);
-        alert(error.message);
+        alert(error.message || 'Failed to play audio');
       }
     } else if (type === 'artist') {
       console.log('Artist selected:', item);
-      window.open(item.external_urls.spotify, '_blank');
+      if (item.external_urls?.spotify) {
+        window.open(item.external_urls.spotify, '_blank');
+      }
     } else if (type === 'album') {
       console.log('Album selected:', item);
-      window.open(item.external_urls.spotify, '_blank');
+      if (item.external_urls?.spotify) {
+        window.open(item.external_urls.spotify, '_blank');
+      }
     }
     setShowDropdown(false);
   };

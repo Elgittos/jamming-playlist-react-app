@@ -16,11 +16,10 @@ class SpotifySource {
    * Search for tracks on Spotify
    * @param {Object} params - Search parameters
    * @param {string} params.q - Search query
-   * @param {number} [params.page] - Page number
    * @param {number} [params.pageSize] - Results per page
    * @returns {Promise<Array>} Normalized audio items
    */
-  async search({ q, page = 1, pageSize = 20 }) {
+  async search({ q, pageSize = 20 }) {
     if (!q || !q.trim()) {
       return [];
     }
@@ -34,7 +33,8 @@ class SpotifySource {
       // Use existing Spotify API
       // Note: Spotify API doesn't support pagination by page number,
       // it uses offset/limit instead
-      const offset = (page - 1) * pageSize;
+      // For now, we'll just use the limit and ignore pagination
+      // TODO: Implement proper offset-based pagination when needed
       
       const data = await searchSpotify(q, pageSize);
       
@@ -51,10 +51,9 @@ class SpotifySource {
    * Get audio item by ID from Spotify
    * Note: This requires a separate API call not implemented in api.js
    * Returns null for now to avoid breaking UI
-   * @param {string} id - Spotify track ID
    * @returns {Promise<Object|null>} Normalized audio item or null
    */
-  async getById(id) {
+  async getById() {
     console.warn('SpotifySource.getById not fully implemented - track details API needed');
     return null;
   }

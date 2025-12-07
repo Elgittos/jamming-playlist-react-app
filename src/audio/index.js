@@ -1,5 +1,6 @@
 // Export all audio-related modules
-export { AudioProvider, useAudio, useAudioSearch, useAudioPlayer } from './AudioProvider';
+export { AudioProvider } from './AudioProvider';
+export { useAudio, useAudioSearch, useAudioPlayer } from './hooks';
 export { audioConfig, getActiveSource, setActiveSource, isSourceEnabled } from './config';
 export { AudioSourceType, LicenseType, DEFAULT_SEARCH_PARAMS } from './types';
 export { default as OpenverseSource } from './sources/OpenverseSource';

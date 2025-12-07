@@ -1,35 +1,62 @@
 import { useState, useEffect } from 'react';
 import SongCard from './SongCard';
+import { useAudio, AudioSourceType } from '../audio';
 import { searchByGenre, isAuthenticated } from '../api';
 
 function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { search, currentSource } = useAudio();
 
   useEffect(() => {
     async function fetchGenreSongs() {
-      if (!isAuthenticated()) {
-        setLoading(false);
-        setError('Please login to see genre tracks');
-        return;
-      }
-
       try {
         setLoading(true);
-        const tracks = await searchByGenre(genre.toLowerCase(), 10);
-        
-        const formattedTracks = tracks.map((track, index) => ({
-          id: track.id || index,
-          uri: track.uri,
-          title: track.name,
-          artist: track.artists.map(artist => artist.name).join(', '),
-          album: track.album.name,
-          albumArt: track.album.images[0]?.url || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image'
-        }));
-        
-        setSongs(formattedTracks);
         setError(null);
+
+        // Use new audio system for Openverse and RoyalFree
+        if (currentSource === AudioSourceType.OPENVERSE || currentSource === AudioSourceType.ROYALFREE) {
+          const results = await search({
+            q: genre.toLowerCase(),
+            pageSize: 10,
+          });
+
+          // Map to SongCard format
+          const formattedTracks = results.map((track) => ({
+            id: track.id,
+            uri: track.uri,
+            title: track.title,
+            artist: track.artist,
+            album: track.title, // Use title as album for non-Spotify sources
+            albumArt: track.thumbnailUrl || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image',
+            audioUrl: track.audioUrl,
+            source: track.source,
+          }));
+
+          setSongs(formattedTracks);
+        } else if (currentSource === AudioSourceType.SPOTIFY) {
+          // Fall back to Spotify API for backward compatibility
+          if (!isAuthenticated()) {
+            setError('Please login to see genre tracks');
+            setLoading(false);
+            return;
+          }
+
+          const tracks = await searchByGenre(genre.toLowerCase(), 10);
+          
+          const formattedTracks = tracks.map((track, index) => ({
+            id: track.id || index,
+            uri: track.uri,
+            title: track.name,
+            artist: track.artists.map(artist => artist.name).join(', '),
+            album: track.album.name,
+            albumArt: track.album.images[0]?.url || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image',
+            source: AudioSourceType.SPOTIFY,
+          }));
+          
+          setSongs(formattedTracks);
+        }
       } catch (err) {
         console.error(`Error fetching ${genre} tracks:`, err);
         setError(`Failed to load ${genre} tracks`);
@@ -39,7 +66,7 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
     }
 
     fetchGenreSongs();
-  }, [genre]);
+  }, [genre, currentSource, search]);
 
   return (
     <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl p-10 border border-opacity-30`}>
