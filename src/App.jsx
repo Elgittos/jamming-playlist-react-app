@@ -18,7 +18,7 @@ function App() {
 
   return (
 
-      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8">
+      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8 overflow-x-hidden max-w-full">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
         
