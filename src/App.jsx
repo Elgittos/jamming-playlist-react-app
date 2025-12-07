@@ -7,6 +7,7 @@ import SearchBar from './components/SearchBar'
 import GenreSection from './components/GenreSection'
 import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
+import AudioSourceSelector from './components/AudioSourceSelector'
 
 function App() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
@@ -22,16 +23,23 @@ function App() {
         <SpotifyPlayer />
         
         {/* Header with gradient and test button */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-10 rounded-2xl shadow-2xl">
-          <div className="flex justify-between items-center gap-6">
-            <h1 className="text-5xl font-bold text-white whitespace-nowrap">🎵 Jamming Playlist App</h1>
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-4 md:p-6 lg:p-10 rounded-2xl shadow-2xl">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">🎵 Jamming Playlist App</h1>
             
-            {/* Search Bar */}
-            <SearchBar />
+            {/* Search Bar - full width on mobile */}
+            <div className="w-full md:flex-1 md:max-w-2xl">
+              <SearchBar />
+            </div>
             
-            <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap">
-              Test Login
-            </Link>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+              {/* Audio Source Selector */}
+              <AudioSourceSelector />
+              
+              <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 md:py-3 px-4 md:px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap text-center w-full sm:w-auto">
+                Test Login
+              </Link>
+            </div>
           </div>
         </div>
           
@@ -43,11 +51,12 @@ function App() {
           selectedPlaylistId={selectedPlaylistId}
         />
 
-        <div className="flex gap-6 w-full min-h-[600px]">
-          <div className="w-1/2">
+        {/* Responsive two-column layout - stacks on mobile */}
+        <div className="flex flex-col lg:flex-row gap-6 w-full min-h-[400px] lg:min-h-[600px]">
+          <div className="w-full lg:w-1/2">
             <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
           </div>
-          <div className="w-1/2">
+          <div className="w-full lg:w-1/2">
             <PlayingNow />
           </div>
         </div>
