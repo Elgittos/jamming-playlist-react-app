@@ -38,8 +38,8 @@ class OpenverseSource {
       // Openverse accepts: pd, cc-by, cc-by-sa, cc-by-nd, cc-by-nc, cc-by-nc-sa, cc-by-nc-nd, cc0
       if (license && license.length > 0) {
         // Map generic 'pd' and 'cc' to specific Openverse licenses
-        const openversionLicenses = this._expandLicenses(license);
-        params.append('license', openversionLicenses.join(','));
+        const openverseLicenses = this._expandLicenses(license);
+        params.append('license', openverseLicenses.join(','));
       }
 
       const url = `${this.baseUrl}/audio/?${params.toString()}`;

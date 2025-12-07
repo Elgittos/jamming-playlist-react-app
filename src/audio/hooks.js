@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect, useContext } from 'react';
 import { AudioContext } from './context';
 import { audioConfig } from './config';
 import { AudioSourceType } from './types';
+import { playTrack as spotifyPlayTrack } from '../api';
 
 /**
  * Hook to use audio context
@@ -93,17 +94,14 @@ export function useAudioPlayer() {
 
     // If it's a Spotify track with URI, use existing Spotify playback
     if (track.source === AudioSourceType.SPOTIFY && track.uri) {
-      // Use existing Spotify playback from api.js
-      import('../api').then(({ playTrack }) => {
-        playTrack(track.uri)
-          .then(() => {
-            setCurrentTrack(track);
-            setIsPlaying(true);
-          })
-          .catch(err => {
-            console.error('Spotify playback error:', err);
-          });
-      });
+      spotifyPlayTrack(track.uri)
+        .then(() => {
+          setCurrentTrack(track);
+          setIsPlaying(true);
+        })
+        .catch(err => {
+          console.error('Spotify playback error:', err);
+        });
       return;
     }
 

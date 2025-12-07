@@ -40,6 +40,7 @@ function SearchBar() {
           if (!isAuthenticated()) {
             setSuggestions(null);
             setShowDropdown(false);
+            setIsLoading(false);
             return;
           }
           const results = await searchSpotify(query, 4);

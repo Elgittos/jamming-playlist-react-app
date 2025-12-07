@@ -18,6 +18,9 @@ class SpotifySource {
    * @param {string} params.q - Search query
    * @param {number} [params.pageSize] - Results per page
    * @returns {Promise<Array>} Normalized audio items
+   * @note Pagination is not fully implemented because the existing searchSpotify
+   * function in api.js doesn't support offset parameter. To implement proper
+   * pagination, update searchSpotify to accept and use offset parameter.
    */
   async search({ q, pageSize = 20 }) {
     if (!q || !q.trim()) {
@@ -31,10 +34,11 @@ class SpotifySource {
 
     try {
       // Use existing Spotify API
-      // Note: Spotify API doesn't support pagination by page number,
-      // it uses offset/limit instead
-      // For now, we'll just use the limit and ignore pagination
-      // TODO: Implement proper offset-based pagination when needed
+      // Pagination limitation: The existing searchSpotify() function doesn't
+      // support offset parameter. It only accepts limit. To add pagination:
+      // 1. Update searchSpotify in api.js to accept offset
+      // 2. Pass offset as: const offset = (page - 1) * pageSize
+      // 3. Add to search params: offset: offset
       
       const data = await searchSpotify(q, pageSize);
       
