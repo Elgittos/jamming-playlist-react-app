@@ -14,7 +14,7 @@ function AudioSourceSelector() {
   // Get display names for sources
   const sourceNames = {
     [AudioSourceType.OPENVERSE]: 'Openverse (Open Licensed)',
-    [AudioSourceType.ROYALFREE]: 'Royal Free Music',
+    [AudioSourceType.ROYALFREE]: 'Jamendo (Free Music)',
     [AudioSourceType.SPOTIFY]: 'Spotify',
   };
 

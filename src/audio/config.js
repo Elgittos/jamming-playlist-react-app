@@ -16,8 +16,10 @@ export const audioConfig = {
     },
     [AudioSourceType.ROYALFREE]: {
       enabled: true,
-      // Royal Free Music API - free, royalty-free music
-      baseUrl: 'https://api.royalfreemusic.com/v1',
+      // Jamendo API - free, royalty-free music (Creative Commons)
+      // No API key needed for basic searches
+      baseUrl: 'https://api.jamendo.com/v3.0',
+      clientId: 'f9408bc3', // Public client ID for open access
     },
     [AudioSourceType.SPOTIFY]: {
       // Disabled by default to avoid licensing issues

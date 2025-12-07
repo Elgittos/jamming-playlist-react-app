@@ -2,21 +2,23 @@ import { AudioSourceType, LicenseType } from '../types';
 import { audioConfig } from '../config';
 
 /**
- * Royal Free Music Source Adapter
- * Implements the AudioSource interface for Royal Free Music API
- * Provides royalty-free, fully playable music
+ * Jamendo Music Source Adapter (using Royal Free name)
+ * Implements the AudioSource interface for Jamendo API
+ * Provides royalty-free, Creative Commons licensed music
+ * API Docs: https://developer.jamendo.com/v3.0
  */
 class RoyalFreeSource {
   constructor() {
-    this.name = 'Royal Free Music';
+    this.name = 'Jamendo Music';
     this.baseUrl = audioConfig.sources[AudioSourceType.ROYALFREE].baseUrl;
+    this.clientId = audioConfig.sources[AudioSourceType.ROYALFREE].clientId;
   }
 
   /**
-   * Search for royalty-free music
+   * Search for royalty-free music on Jamendo
    * @param {Object} params - Search parameters
    * @param {string} params.q - Search query
-   * @param {number} [params.page] - Page number
+   * @param {number} [params.page] - Page number (Jamendo uses offset)
    * @param {number} [params.pageSize] - Results per page
    * @returns {Promise<Array>} Normalized audio items
    */
@@ -26,39 +28,54 @@ class RoyalFreeSource {
     }
 
     try {
-      // Royal Free Music API endpoints
+      // Jamendo API uses offset instead of page
+      const offset = (page - 1) * pageSize;
+      
+      // Jamendo tracks search endpoint
       const params = new URLSearchParams({
-        query: q.trim(),
-        page: page.toString(),
+        client_id: this.clientId,
+        format: 'json',
         limit: pageSize.toString(),
+        offset: offset.toString(),
+        search: q.trim(),
+        include: 'musicinfo',
+        imagesize: '200',
       });
 
-      const url = `${this.baseUrl}/search?${params.toString()}`;
+      const url = `${this.baseUrl}/tracks/?${params.toString()}`;
       
       const response = await this._fetchWithRetry(url);
       
       if (!response.ok) {
-        throw new Error(`Royal Free Music API error: ${response.status}`);
+        throw new Error(`Jamendo API error: ${response.status}`);
       }
 
       const data = await response.json();
       
       // Normalize results to common schema
-      return this._normalizeResults(data.tracks || data.results || []);
+      return this._normalizeResults(data.results || []);
     } catch (error) {
-      console.error('Royal Free Music search error:', error);
+      console.error('Jamendo search error:', error);
       throw error;
     }
   }
 
   /**
-   * Get audio item by ID
+   * Get audio item by ID from Jamendo
    * @param {string} id - Track ID
    * @returns {Promise<Object|null>} Normalized audio item or null
    */
   async getById(id) {
     try {
-      const url = `${this.baseUrl}/track/${id}`;
+      const params = new URLSearchParams({
+        client_id: this.clientId,
+        format: 'json',
+        id: id,
+        include: 'musicinfo',
+        imagesize: '200',
+      });
+      
+      const url = `${this.baseUrl}/tracks/?${params.toString()}`;
       
       const response = await this._fetchWithRetry(url);
       
@@ -66,41 +83,41 @@ class RoyalFreeSource {
         if (response.status === 404) {
           return null;
         }
-        throw new Error(`Royal Free Music API error: ${response.status}`);
+        throw new Error(`Jamendo API error: ${response.status}`);
       }
 
       const data = await response.json();
       
       // Normalize single result
-      const normalized = this._normalizeResults([data]);
+      const normalized = this._normalizeResults(data.results || []);
       return normalized[0] || null;
     } catch (error) {
-      console.error('Royal Free Music getById error:', error);
+      console.error('Jamendo getById error:', error);
       return null;
     }
   }
 
   /**
-   * Normalize Royal Free Music API results to common schema
+   * Normalize Jamendo API results to common schema
    * @private
    */
   _normalizeResults(results) {
     return results
       .filter(item => {
         // Only include items with a valid, playable audio URL
-        return item.audio_url || item.stream_url || item.url;
+        return item.audio || item.audiodownload;
       })
       .map(item => {
         return {
-          id: item.id || item.track_id,
-          title: item.title || item.name || 'Untitled',
-          artist: item.artist || item.creator || 'Unknown Artist',
-          license: LicenseType.OTHER, // Royal Free guarantees royalty-free but not necessarily PD/CC
-          audioUrl: item.audio_url || item.stream_url || item.url,
-          thumbnailUrl: item.thumbnail || item.artwork_url || item.image_url || undefined,
+          id: item.id,
+          title: item.name || 'Untitled',
+          artist: item.artist_name || 'Unknown Artist',
+          license: LicenseType.CREATIVE_COMMONS, // Jamendo is all CC licensed
+          audioUrl: item.audio || item.audiodownload,
+          thumbnailUrl: item.image || item.album_image || undefined,
           source: AudioSourceType.ROYALFREE,
           duration: item.duration ? this._formatDuration(item.duration) : undefined,
-          durationMs: item.duration_ms || (item.duration ? item.duration * 1000 : undefined),
+          durationMs: item.duration ? item.duration * 1000 : undefined,
         };
       });
   }
@@ -110,10 +127,10 @@ class RoyalFreeSource {
    * @private
    */
   _formatDuration(duration) {
-    // Duration might be in seconds or milliseconds
-    const seconds = duration > 10000 ? Math.floor(duration / 1000) : duration;
+    // Duration from Jamendo is in seconds
+    const seconds = Math.floor(duration);
     const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
+    const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
