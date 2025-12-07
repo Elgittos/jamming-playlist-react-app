@@ -32,11 +32,11 @@ function App() {
               <SearchBar />
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
               {/* Audio Source Selector */}
               <AudioSourceSelector />
               
-              <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 md:py-3 px-3 md:px-4 lg:px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap text-center w-full sm:w-auto text-sm md:text-base">
+              <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 md:py-3 px-3 md:px-4 lg:px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 text-center w-full sm:w-auto text-xs sm:text-sm md:text-base break-words">
                 Test Login
               </Link>
             </div>
