@@ -62,9 +62,9 @@ function PlayingNow() {
     : 0;
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-10 h-full border border-fuchsia-800/30 flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-white">Playing Now</h2>
+    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 h-full border border-fuchsia-800/30 flex flex-col max-w-full overflow-hidden">
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Playing Now</h2>
         {/* Playing status badge moved to header */}
         {!loading && playbackState?.item && (
           <div>

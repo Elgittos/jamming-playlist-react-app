@@ -18,25 +18,25 @@ function App() {
 
   return (
 
-      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8 overflow-x-hidden max-w-full">
+      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-4 md:gap-6 lg:gap-8 p-2 sm:p-4 md:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
         
         {/* Header with gradient and test button */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-4 md:p-6 lg:p-10 rounded-2xl shadow-2xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">🎵 Jamming Playlist App</h1>
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl md:rounded-2xl shadow-2xl w-full">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4 lg:gap-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white break-words">🎵 Jamming Playlist App</h1>
             
             {/* Search Bar - full width on mobile */}
             <div className="w-full md:flex-1 md:max-w-2xl">
               <SearchBar />
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
               {/* Audio Source Selector */}
               <AudioSourceSelector />
               
-              <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 md:py-3 px-4 md:px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap text-center w-full sm:w-auto">
+              <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 md:py-3 px-3 md:px-4 lg:px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap text-center w-full sm:w-auto text-sm md:text-base">
                 Test Login
               </Link>
             </div>
@@ -52,7 +52,7 @@ function App() {
         />
 
         {/* Responsive two-column layout - stacks on mobile */}
-        <div className="flex flex-col lg:flex-row gap-6 w-full min-h-[400px] lg:min-h-[600px]">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 w-full min-h-[300px] md:min-h-[400px] lg:min-h-[600px]">
           <div className="w-full lg:w-1/2">
             <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
           </div>

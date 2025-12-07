@@ -69,8 +69,8 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
   }, [genre, currentSource, search]);
 
   return (
-    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl p-10 border border-opacity-30`}>
-      <h2 className="text-3xl font-bold text-white mb-6">{genre}</h2>
+    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-opacity-30 max-w-full overflow-hidden`}>
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">{ genre}</h2>
       
       {loading && (
         <div className="flex justify-center items-center py-12">

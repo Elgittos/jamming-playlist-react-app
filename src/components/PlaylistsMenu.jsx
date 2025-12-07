@@ -26,8 +26,8 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (loading) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-10 border border-indigo-800/30">
-        <h2 className="text-3xl font-bold text-white mb-6">Your Playlists</h2>
+      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-indigo-800/30 max-w-full overflow-hidden">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">Your Playlists</h2>
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400"></div>
         </div>
@@ -37,16 +37,16 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (error) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-10 border border-indigo-800/30">
-        <h2 className="text-3xl font-bold text-white mb-6">Your Playlists</h2>
+      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-indigo-800/30 max-w-full overflow-hidden">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">Your Playlists</h2>
         <p className="text-indigo-300 text-center py-12">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-10 border border-indigo-800/30">
-      <h2 className="text-3xl font-bold text-white mb-6">Your Playlists</h2>
+    <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-indigo-800/30 max-w-full overflow-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">Your Playlists</h2>
       
       <div className="relative">
         {/* Scrollable container */}

@@ -44,8 +44,8 @@ function RecentlyPlayed() {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-2xl shadow-2xl p-10 border border-fuchsia-800/30">
-      <h2 className="text-3xl font-bold text-white mb-6">Recently Played</h2>
+    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-fuchsia-800/30 max-w-full overflow-hidden">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">Recently Played</h2>
       
       {/* Loading state */}
       {loading && (
