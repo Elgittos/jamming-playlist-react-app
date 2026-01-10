@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Custom Scrollbar Styling - Purple Theme */
 ::-webkit-scrollbar {
   width: 24px;
@@ -97,4 +105,24 @@
 * {
   scrollbar-width: auto;
   scrollbar-color: #9333ea #2e1065;
+}
+
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-button {
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-button:vertical:decrement,
+  ::-webkit-scrollbar-button:vertical:increment,
+  ::-webkit-scrollbar-button:horizontal:decrement,
+  ::-webkit-scrollbar-button:horizontal:increment {
+    background-size: 14px 14px;
+  }
 }

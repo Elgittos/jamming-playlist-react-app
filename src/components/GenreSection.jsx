@@ -42,8 +42,8 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
   }, [genre]);
 
   return (
-    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl p-10 border border-opacity-30`}>
-      <h2 className="text-3xl font-bold text-white mb-6">{genre}</h2>
+    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 border border-opacity-30`}>
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6">{genre}</h2>
       
       {loading && (
         <div className="flex justify-center items-center py-12">
@@ -60,7 +60,7 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
       {!loading && !error && songs.length > 0 && (
         <div className="relative">
           {/* Scrollable container */}
-          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-950">
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-950">
             {songs.map((song) => (
               <SongCard key={song.id} song={song} />
             ))}

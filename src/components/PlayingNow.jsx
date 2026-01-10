@@ -62,19 +62,19 @@ function PlayingNow() {
     : 0;
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-10 h-full border border-fuchsia-800/30 flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-white">Playing Now</h2>
+    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 h-full border border-fuchsia-800/30 flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Playing Now</h2>
         {/* Playing status badge moved to header */}
         {!loading && playbackState?.item && (
           <div>
             {playbackState.is_playing ? (
-              <span className="flex items-center gap-2 text-sm px-4 py-2 bg-green-500/20 text-green-400 rounded-full">
+              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-green-500/20 text-green-400 rounded-full">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 Playing
               </span>
             ) : (
-              <span className="flex items-center gap-2 text-sm px-4 py-2 bg-gray-500/20 text-gray-400 rounded-full">
+              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-gray-500/20 text-gray-400 rounded-full">
                 <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
                 Paused
               </span>
@@ -100,27 +100,26 @@ function PlayingNow() {
             <img
               src={playbackState.item.album.images[0]?.url}
               alt={playbackState.item.album.name}
-              className="max-w-full max-h-full w-auto h-auto rounded-xl shadow-2xl object-contain"
-              style={{ maxHeight: '400px', maxWidth: '400px' }}
+              className="w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[360px] 2xl:max-w-[400px] max-h-[220px] sm:max-h-[280px] lg:max-h-[360px] 2xl:max-h-[400px] rounded-xl shadow-2xl object-contain"
             />
           </div>
 
           {/* Compact Track Info Below */}
           <div className="text-center space-y-2 w-full">
-            <h3 className="text-2xl font-bold text-white line-clamp-1 px-4">
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-1 px-4">
               {playbackState.item.name}
             </h3>
-            <p className="text-lg text-gray-300 line-clamp-1">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-300 line-clamp-1 px-4">
               {playbackState.item.artists.map(a => a.name).join(', ')}
             </p>
-            <p className="text-sm text-gray-400 line-clamp-1">
+            <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 px-4">
               {playbackState.item.album.name}
             </p>
           </div>
 
           {/* Controls */}
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
               <button
                 onClick={handlePrevious}
                 className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"

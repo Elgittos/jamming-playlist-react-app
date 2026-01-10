@@ -85,7 +85,7 @@ function SearchBar() {
   };
 
   return (
-    <div ref={dropdownRef} className="flex-1 max-w-2xl relative">
+    <div ref={dropdownRef} className="w-full relative">
       <form onSubmit={handleSubmit}>
         <div className="relative group">
           <input

@@ -46,8 +46,8 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-10 h-full border border-emerald-800/30 flex flex-col">
-      <h2 className="text-3xl font-bold text-white mb-6">Playlist Tracks</h2>
+    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 h-full border border-emerald-800/30 flex flex-col">
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6">Playlist Tracks</h2>
       
       {/* Loading state */}
       {loading && (
@@ -74,7 +74,7 @@ function YourPlaylist({ selectedPlaylistId }) {
 
       {/* Tracks display */}
       {!loading && !error && tracks.length > 0 && (
-        <div className="space-y-2 max-h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
+        <div className="space-y-2 max-h-[50vh] sm:max-h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
           {tracks.map((track, index) => (
             <div
               key={track.id + index}

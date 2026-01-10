@@ -67,17 +67,17 @@ function SpotifyPlayer() {
 
   if (!isReady) {
     return (
-      <div className="fixed bottom-4 right-4 z-50 bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-full text-sm flex items-center gap-2 backdrop-blur-sm border border-yellow-500/30">
+      <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-full text-sm flex items-center gap-2 backdrop-blur-sm border border-yellow-500/30 max-w-[calc(100vw-2rem)]">
         <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-        Connecting Web Player...
+        <span className="truncate">Connecting Web Player...</span>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm flex items-center gap-2 backdrop-blur-sm border border-green-500/30">
-      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-      Web Player Ready!
+    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm flex items-center gap-2 backdrop-blur-sm border border-green-500/30 max-w-[calc(100vw-2rem)]">
+      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse flex-shrink-0"></span>
+      <span className="truncate">Web Player Ready!</span>
     </div>
   );
 }

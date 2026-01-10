@@ -17,39 +17,43 @@ function App() {
 
   return (
 
-      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black flex flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
+      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-6 sm:gap-8 p-4 md:p-6 lg:p-8">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
-        
-        {/* Header with gradient and test button */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-10 rounded-2xl shadow-2xl">
-          <div className="flex justify-between items-center gap-6">
-            <h1 className="text-5xl font-bold text-white whitespace-nowrap">🎵 Jamming Playlist App</h1>
-            
+
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-5 sm:p-8 lg:p-10 rounded-2xl shadow-2xl">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              🎵 Jamming Playlist App
+            </h1>
+
             {/* Search Bar */}
-            <SearchBar />
-            
-            <Link to="/test" className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50 whitespace-nowrap">
+            <div className="w-full lg:flex-1 lg:max-w-2xl">
+              <SearchBar />
+            </div>
+
+            <Link
+              to="/test"
+              className="w-full sm:w-auto text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50"
+            >
               Test Login
             </Link>
           </div>
         </div>
-          
+
         <RecentlyPlayed />
 
         {/* Playlists Menu */}
-        <PlaylistsMenu 
+        <PlaylistsMenu
           onPlaylistSelect={handlePlaylistSelect}
           selectedPlaylistId={selectedPlaylistId}
         />
 
-        <div className="flex gap-6 w-full min-h-[600px]">
-          <div className="w-1/2">
-            <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
-          </div>
-          <div className="w-1/2">
-            <PlayingNow />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full lg:min-h-[600px]">
+          <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
+          <PlayingNow />
         </div>
 
         {/* Genre Sections */}
@@ -58,7 +62,8 @@ function App() {
         <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" />
         <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" />
         <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" />
-      </main>
+      </div>
+    </main>
   )
 }
 

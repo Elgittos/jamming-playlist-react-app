@@ -44,8 +44,8 @@ function RecentlyPlayed() {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-2xl shadow-2xl p-10 border border-fuchsia-800/30">
-      <h2 className="text-3xl font-bold text-white mb-6">Recently Played</h2>
+    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 border border-fuchsia-800/30">
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6">Recently Played</h2>
       
       {/* Loading state */}
       {loading && (
@@ -65,7 +65,7 @@ function RecentlyPlayed() {
       {!loading && !error && recentSongs.length > 0 && (
         <div className="relative">
           {/* Scrollable container */}
-          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-fuchsia-700 scrollbar-track-fuchsia-950">
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-fuchsia-700 scrollbar-track-fuchsia-950">
             {recentSongs.map((song) => (
               <SongCard key={song.id} song={song} />
             ))}

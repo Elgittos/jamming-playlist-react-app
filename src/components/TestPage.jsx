@@ -52,8 +52,8 @@ function TestPage() {
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-8 rounded-2xl shadow-2xl mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">🧪 Spotify API Test Page</h1>
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-5 sm:p-8 rounded-2xl shadow-2xl mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">🧪 Spotify API Test Page</h1>
           {user && (
             <p className="text-gray-300 text-lg">Welcome, {user.display_name}! 👋</p>
           )}
@@ -74,7 +74,7 @@ function TestPage() {
             {/* User Profile */}
             <div className="bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-6 border border-emerald-800/30">
               <h3 className="text-2xl font-bold text-emerald-400 mb-4">👤 User Profile</h3>
-              <div className="grid grid-cols-2 gap-4 text-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white">
                 <div>
                   <p className="text-gray-400">Name:</p>
                   <p className="font-semibold">{apiData.user.display_name}</p>
