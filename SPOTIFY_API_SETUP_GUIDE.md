@@ -16,14 +16,40 @@ This guide shows how to set up Spotify authentication using **Authorization Code
    ```
    http://localhost:5173/callback
    ```
+  Also add your Netlify production callback (replace with your real URL):
+  ```
+  https://YOUR-SITE.netlify.app/callback
+  ```
 5. Click **Add**
 6. Click **Save** at the bottom
 
 ### 1.2 Verify Your Credentials
 
 - **Client ID:** `c1e8cce16c75485286206a1929bfbe7f`
-- **Redirect URI:** `http://localhost:5173/callback`
+- **Redirect URI (dev):** `http://localhost:5173/callback`
+- **Redirect URI (prod):** `https://YOUR-SITE.netlify.app/callback`
 - **No Client Secret needed** (PKCE doesn't use it!)
+
+---
+
+## 🌐 Deploy on Netlify (without breaking localhost)
+
+### A) SPA routing (required)
+
+This repo includes a Netlify SPA redirect rule in [public/_redirects](public/_redirects) so routes like `/callback` work in production.
+
+### B) Set environment variables on Netlify (recommended)
+
+In Netlify → **Site settings** → **Environment variables**, add:
+
+- `VITE_SPOTIFY_CLIENT_ID` = your Spotify Client ID
+
+You generally do NOT need to set `VITE_SPOTIFY_REDIRECT_URI`, because the app defaults to `${window.location.origin}/callback`.
+
+### C) Important note about deploy previews
+
+Spotify requires an exact match for the redirect URL. Netlify deploy previews have unique URLs, so OAuth may fail on preview deploys unless you register those URLs in Spotify.
+For a smooth workflow, test Spotify login on your production domain.
 
 ---
 

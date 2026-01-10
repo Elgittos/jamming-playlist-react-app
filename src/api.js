@@ -1,6 +1,12 @@
 // Spotify API Configuration - Authorization Code with PKCE Flow
-const CLIENT_ID = 'c1e8cce16c75485286206a1929bfbe7f';
-const REDIRECT_URI = 'http://127.0.0.1:5173/callback'; // Matches Spotify Dashboard
+// Spotify requires redirect_uri to EXACTLY match one of the Redirect URIs configured
+// in the Spotify Developer Dashboard (including hostname and port).
+//
+// Recommended configuration:
+// - VITE_SPOTIFY_CLIENT_ID
+// - VITE_SPOTIFY_REDIRECT_URI (optional)
+const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || 'c1e8cce16c75485286206a1929bfbe7f';
+const REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI || `${window.location.origin}/callback`;
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 
