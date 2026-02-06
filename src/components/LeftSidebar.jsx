@@ -3,6 +3,7 @@ import { useState } from 'react';
 function LeftSidebar() {
   const [isPinned, setIsPinned] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isExpanded = isPinned || isHovered;
 
@@ -55,13 +56,35 @@ function LeftSidebar() {
   ];
 
   return (
-    <div
-      className={`fixed left-0 top-0 h-full bg-gradient-to-b from-indigo-950 via-purple-950 to-black border-r-2 border-purple-700/30 shadow-2xl transition-all duration-300 ease-in-out z-40 ${
-        isExpanded ? 'w-64' : 'w-20'
-      }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <>
+      {/* Mobile Menu Button - Only visible on small screens */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-purple-800/90 hover:bg-purple-700/90 text-white shadow-lg backdrop-blur-sm"
+        aria-label="Toggle menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed left-0 top-0 h-full bg-gradient-to-b from-indigo-950 via-purple-950 to-black border-r-2 border-purple-700/30 shadow-2xl transition-all duration-300 ease-in-out z-40 
+          ${isExpanded ? 'w-64' : 'w-20'}
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
       {/* Pin/Unpin Button */}
       <div className="flex items-center justify-between p-4 border-b border-purple-700/30">
         <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'w-auto opacity-100' : 'w-0 opacity-0'}`}>
@@ -118,7 +141,8 @@ function LeftSidebar() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
