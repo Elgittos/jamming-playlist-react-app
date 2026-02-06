@@ -22,7 +22,7 @@ function SpotifyPlayer() {
         });
 
         spotifyPlayer.addListener('ready', ({ device_id }) => {
-          console.log('✅ Web Player Ready! Device ID:', device_id);
+          console.log('âœ… Web Player Ready! Device ID:', device_id);
           window.spotifyDeviceId = device_id;
           setIsReady(true);
         });
@@ -50,7 +50,7 @@ function SpotifyPlayer() {
 
         const connected = await spotifyPlayer.connect();
         if (connected) {
-          console.log('✅ Connected to Spotify!');
+          console.log('âœ… Connected to Spotify!');
           setPlayer(spotifyPlayer);
         }
       } catch (error) {
@@ -83,3 +83,4 @@ function SpotifyPlayer() {
 }
 
 export default SpotifyPlayer;
+

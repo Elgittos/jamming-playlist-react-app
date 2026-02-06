@@ -56,18 +56,18 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full surface-panel rounded-2xl p-3 sm:p-4 h-full border border-emerald-800/30 flex flex-col">
+    <div className="w-full surface-panel rounded-2xl p-3 sm:p-4 h-full border border-teal-800/30 flex flex-col">
       <h2 className="text-base sm:text-lg font-bold text-white mb-2.5 sm:mb-3">Playlist Tracks</h2>
 
       {loading && (
         <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-400" />
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-400" />
         </div>
       )}
 
       {error && !loading && (
         <div className="text-center py-8">
-          <p className="text-emerald-300 text-sm sm:text-base">{error}</p>
+          <p className="text-teal-300 text-sm sm:text-base">{error}</p>
         </div>
       )}
 
@@ -80,15 +80,15 @@ function YourPlaylist({ selectedPlaylistId }) {
       )}
 
       {!loading && !error && tracks.length > 0 && (
-        <div className="space-y-1.5 max-h-[52vh] xl:max-h-[620px] overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
+        <div className="space-y-1.5 max-h-[52vh] xl:max-h-[620px] overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-teal-700 scrollbar-track-teal-950">
           {tracks.map((track, index) => (
             <button
               type="button"
               key={`${track.id}-${index}`}
               onClick={() => handleTrackClick(track.uri)}
-              className="w-full bg-emerald-950/45 hover:bg-emerald-900/50 rounded-lg p-2.5 border border-emerald-800/30 transition-all duration-300 cursor-pointer group flex items-center gap-2 text-left"
+              className="w-full bg-teal-950/45 hover:bg-teal-900/50 rounded-lg p-2.5 border border-teal-800/30 transition-all duration-300 cursor-pointer group flex items-center gap-2 text-left"
             >
-              <div className="w-7 text-center text-gray-400 group-hover:text-emerald-300 text-xs sm:text-sm">
+              <div className="w-7 text-center text-gray-400 group-hover:text-teal-300 text-xs sm:text-sm">
                 {index + 1}
               </div>
 
@@ -99,13 +99,13 @@ function YourPlaylist({ selectedPlaylistId }) {
                   className="w-10 h-10 rounded object-cover shadow-lg"
                 />
               ) : (
-                <div className="w-10 h-10 rounded bg-emerald-800 flex items-center justify-center">
-                  <span className="text-lg">♪</span>
+                <div className="w-10 h-10 rounded bg-teal-800 flex items-center justify-center">
+                  <span className="text-sm font-semibold text-slate-100">&#9835;</span>
                 </div>
               )}
 
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-sm sm:text-base truncate group-hover:text-emerald-300 transition-colors">
+                <h3 className="text-white font-semibold text-sm sm:text-base truncate group-hover:text-teal-300 transition-colors">
                   {track.name}
                 </h3>
                 <p className="text-gray-400 text-xs sm:text-sm truncate">
@@ -124,7 +124,7 @@ function YourPlaylist({ selectedPlaylistId }) {
               </div>
 
               <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg className="w-6 h-6 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-6 h-6 text-teal-300" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                 </svg>
               </div>
@@ -135,7 +135,7 @@ function YourPlaylist({ selectedPlaylistId }) {
 
       {!loading && !error && selectedPlaylistId && tracks.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-emerald-300 text-sm sm:text-base">This playlist is empty</p>
+          <p className="text-teal-300 text-sm sm:text-base">This playlist is empty</p>
           <p className="text-gray-400 text-xs sm:text-sm mt-1.5">Add some tracks in Spotify.</p>
         </div>
       )}
@@ -144,3 +144,6 @@ function YourPlaylist({ selectedPlaylistId }) {
 }
 
 export default YourPlaylist;
+
+
+

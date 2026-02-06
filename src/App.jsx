@@ -81,11 +81,11 @@ function App() {
         </section>
 
         <section className="grid grid-cols-1 gap-3 sm:gap-4">
-          <GenreSection genre="Pop" gradientFrom="from-pink-900" gradientVia="via-rose-900" gradientTo="to-pink-950" compact />
-          <GenreSection genre="Rap" gradientFrom="from-orange-900" gradientVia="via-amber-900" gradientTo="to-orange-950" compact />
-          <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" compact />
-          <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" compact />
-          <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" compact />
+          <GenreSection genre="Pop" gradientFrom="from-cyan-900" gradientVia="via-sky-900" gradientTo="to-slate-950" compact />
+          <GenreSection genre="Rap" gradientFrom="from-teal-900" gradientVia="via-cyan-900" gradientTo="to-slate-950" compact />
+          <GenreSection genre="Rock" gradientFrom="from-amber-900" gradientVia="via-orange-900" gradientTo="to-zinc-950" compact />
+          <GenreSection genre="Disco" gradientFrom="from-lime-900" gradientVia="via-teal-900" gradientTo="to-slate-950" compact />
+          <GenreSection genre="Bachata" gradientFrom="from-rose-900" gradientVia="via-orange-900" gradientTo="to-zinc-950" compact />
         </section>
       </div>
     </main>
@@ -93,3 +93,4 @@ function App() {
 }
 
 export default App
+

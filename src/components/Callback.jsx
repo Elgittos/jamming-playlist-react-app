@@ -10,14 +10,14 @@ function Callback() {
     async function processCallback() {
       try {
         await handleCallback();
-        setStatus('✅ Authentication successful! Redirecting...');
+        setStatus('âœ… Authentication successful! Redirecting...');
         
         // Redirect to home page after successful auth
         setTimeout(() => {
           navigate('/');
         }, 1500);
       } catch (error) {
-        setStatus('❌ Authentication failed: ' + error.message);
+        setStatus('âŒ Authentication failed: ' + error.message);
         console.error('Callback error:', error);
       }
     }
@@ -26,12 +26,12 @@ function Callback() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-violet-950 flex items-center justify-center">
+    <div className="min-h-screen bg-blue-950 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
         <h1 className="text-2xl font-bold mb-4">Authenticating with Spotify</h1>
         <p className="text-gray-700">{status}</p>
         <div className="mt-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
         </div>
       </div>
     </div>
@@ -39,3 +39,5 @@ function Callback() {
 }
 
 export default Callback;
+
+

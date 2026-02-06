@@ -20,3 +20,4 @@ createRoot(document.getElementById('root')).render(
     </PlayerProvider>
   </StrictMode>,
 )
+

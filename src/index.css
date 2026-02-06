@@ -2,24 +2,24 @@
 
 :root,
 :root[data-theme='original'] {
-  --app-bg: radial-gradient(circle at 0% 0%, #312e81 0%, #1d1239 45%, #05010f 100%);
-  --surface-bg: linear-gradient(140deg, rgba(34, 20, 55, 0.88), rgba(11, 6, 24, 0.92));
-  --surface-border: rgba(190, 24, 93, 0.2);
-  --surface-shadow: 0 16px 44px rgba(2, 6, 23, 0.45);
+  --app-bg: radial-gradient(circle at 5% 0%, #0f2f3f 0%, #0a1927 42%, #050b12 100%);
+  --surface-bg: linear-gradient(140deg, rgba(10, 28, 41, 0.88), rgba(6, 15, 24, 0.94));
+  --surface-border: rgba(34, 211, 238, 0.24);
+  --surface-shadow: 0 16px 44px rgba(2, 8, 16, 0.52);
 }
 
 :root[data-theme='dark'] {
-  --app-bg: radial-gradient(circle at 0% 0%, #101828 0%, #070d18 45%, #02050d 100%);
-  --surface-bg: linear-gradient(140deg, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.94));
-  --surface-border: rgba(56, 189, 248, 0.2);
-  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+  --app-bg: radial-gradient(circle at 5% 0%, #111827 0%, #0b1220 45%, #030712 100%);
+  --surface-bg: linear-gradient(140deg, rgba(17, 24, 39, 0.9), rgba(4, 10, 22, 0.95));
+  --surface-border: rgba(56, 189, 248, 0.24);
+  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.56);
 }
 
 :root[data-theme='light'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #e0f2fe 0%, #dbeafe 40%, #eff6ff 100%);
-  --surface-bg: linear-gradient(140deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
-  --surface-border: rgba(59, 130, 246, 0.22);
-  --surface-shadow: 0 14px 32px rgba(15, 23, 42, 0.25);
+  --app-bg: radial-gradient(circle at 5% 0%, #ecfeff 0%, #dbeafe 44%, #f8fafc 100%);
+  --surface-bg: linear-gradient(140deg, rgba(30, 41, 59, 0.86), rgba(15, 23, 42, 0.93));
+  --surface-border: rgba(14, 165, 233, 0.26);
+  --surface-shadow: 0 14px 36px rgba(15, 23, 42, 0.25);
 }
 
 html,
@@ -58,17 +58,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #a855f7 0%, #9333ea 100%);
+  background: linear-gradient(180deg, #06b6d4 0%, #0284c7 100%);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%);
+  background: linear-gradient(180deg, #22d3ee 0%, #0ea5e9 100%);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #9333ea rgba(15, 23, 42, 0.35);
+  scrollbar-color: #0284c7 rgba(15, 23, 42, 0.35);
 }
 
 @media (max-width: 640px) {
@@ -77,3 +77,4 @@ body {
     height: 8px;
   }
 }
+

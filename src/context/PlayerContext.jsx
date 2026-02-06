@@ -32,7 +32,7 @@ function formatTrackFromPlaybackItem(item) {
     title: item.name,
     artist: item.artists?.map((a) => a.name).join(', ') || '',
     album: item.album?.name || '',
-    albumArt: item.album?.images?.[0]?.url || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image'
+    albumArt: item.album?.images?.[0]?.url || 'https://via.placeholder.com/200/0E7490/FFFFFF?text=No+Image'
   };
 }
 
@@ -45,7 +45,7 @@ function formatTrackFromRecentlyPlayedItem(item, indexFallback) {
     title: track.name,
     artist: track.artists?.map((a) => a.name).join(', ') || '',
     album: track.album?.name || '',
-    albumArt: track.album?.images?.[0]?.url || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image'
+    albumArt: track.album?.images?.[0]?.url || 'https://via.placeholder.com/200/0E7490/FFFFFF?text=No+Image'
   };
 }
 
@@ -323,3 +323,5 @@ export function PlayerProvider({ children }) {
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
 }
+
+

@@ -26,7 +26,7 @@ function SongCard({ song, compact = false }) {
   return (
     <div 
       onClick={handlePlay}
-      className={`bg-gradient-to-br from-violet-800 to-purple-900 p-2.5 sm:p-3 rounded-xl ${cardSize} flex-shrink-0 hover:from-violet-700 hover:to-purple-800 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-purple-500/40 hover:scale-[1.02] border border-violet-700/30 flex flex-col`}
+      className={`bg-gradient-to-br from-blue-800 to-sky-900 p-2.5 sm:p-3 rounded-xl ${cardSize} flex-shrink-0 hover:from-blue-700 hover:to-sky-800 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-sky-500/40 hover:scale-[1.02] border border-blue-700/30 flex flex-col`}
     >
       <img 
         src={song.albumArt} 
@@ -45,3 +45,5 @@ function SongCard({ song, compact = false }) {
 }
 
 export default SongCard;
+
+

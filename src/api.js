@@ -138,11 +138,11 @@ export async function handleCallback() {
     // Clean up code verifier
     localStorage.removeItem('code_verifier');
     
-    console.log('✅ Access token received successfully!');
+    console.log('âœ… Access token received successfully!');
     
     return accessToken;
   } catch (error) {
-    console.error('❌ Error exchanging code for token:', error);
+    console.error('âŒ Error exchanging code for token:', error);
     throw error;
   }
 }
@@ -184,11 +184,11 @@ async function refreshAccessToken() {
     localStorage.setItem('access_token', accessToken);
     localStorage.setItem('token_expiration', tokenExpirationTime.toString());
     
-    console.log('✅ Access token refreshed successfully!');
+    console.log('âœ… Access token refreshed successfully!');
     
     return accessToken;
   } catch (error) {
-    console.error('❌ Error refreshing token:', error);
+    console.error('âŒ Error refreshing token:', error);
     // If refresh fails, clear tokens and require re-auth
     logout();
     throw error;
@@ -256,7 +256,7 @@ export function logout() {
   localStorage.removeItem('token_expiration');
   localStorage.removeItem('code_verifier');
   
-  console.log('✅ Logged out successfully');
+  console.log('âœ… Logged out successfully');
 }
 
 /**
@@ -279,7 +279,7 @@ export async function getCurrentUser() {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error getting user profile:', error);
+    console.error('âŒ Error getting user profile:', error);
     throw error;
   }
 }
@@ -307,7 +307,7 @@ export async function getRecentlyPlayed(limit = 20) {
     const data = await response.json();
     return data.items;
   } catch (error) {
-    console.error('❌ Error getting recently played:', error);
+    console.error('âŒ Error getting recently played:', error);
     throw error;
   }
 }
@@ -333,7 +333,7 @@ export async function getUserPlaylists(limit = 20) {
     const data = await response.json();
     return data.items;
   } catch (error) {
-    console.error('❌ Error getting playlists:', error);
+    console.error('âŒ Error getting playlists:', error);
     throw error;
   }
 }
@@ -368,7 +368,7 @@ export async function getPlaylistTracks(playlistId) {
       addedAt: item.added_at
     }));
   } catch (error) {
-    console.error('❌ Error getting playlist tracks:', error);
+    console.error('âŒ Error getting playlist tracks:', error);
     throw error;
   }
 }
@@ -404,7 +404,7 @@ export async function createPlaylist(userId, name, description = '', isPublic = 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error creating playlist:', error);
+    console.error('âŒ Error creating playlist:', error);
     throw error;
   }
 }
@@ -436,7 +436,7 @@ export async function addTracksToPlaylist(playlistId, trackUris) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error adding tracks to playlist:', error);
+    console.error('âŒ Error adding tracks to playlist:', error);
     throw error;
   }
 }
@@ -470,7 +470,7 @@ export async function searchSpotify(query, limit = 4) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error searching Spotify:', error);
+    console.error('âŒ Error searching Spotify:', error);
     throw error;
   }
 }
@@ -505,7 +505,7 @@ export async function searchByGenre(genre, limit = 10) {
     const data = await response.json();
     return data.tracks.items;
   } catch (error) {
-    console.error(`❌ Error searching genre ${genre}:`, error);
+    console.error(`âŒ Error searching genre ${genre}:`, error);
     throw error;
   }
 }
@@ -536,7 +536,7 @@ export async function getCurrentlyPlaying() {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error getting currently playing:', error);
+    console.error('âŒ Error getting currently playing:', error);
     throw error;
   }
 }
@@ -566,7 +566,7 @@ export async function getPlaybackState() {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('❌ Error getting playback state:', error);
+    console.error('âŒ Error getting playback state:', error);
     throw error;
   }
 }
@@ -591,7 +591,7 @@ export async function getAvailableDevices() {
     const data = await response.json();
     return data.devices;
   } catch (error) {
-    console.error('❌ Error getting devices:', error);
+    console.error('âŒ Error getting devices:', error);
     throw error;
   }
 }
@@ -639,7 +639,7 @@ export async function playTrack(uris, deviceId = null) {
 
     return true;
   } catch (error) {
-    console.error('❌ Error playing track:', error);
+    console.error('âŒ Error playing track:', error);
     throw error;
   }
 }
@@ -668,7 +668,7 @@ export async function pausePlayback() {
 
     return true;
   } catch (error) {
-    console.error('❌ Error pausing playback:', error);
+    console.error('âŒ Error pausing playback:', error);
     throw error;
   }
 }
@@ -697,7 +697,7 @@ export async function resumePlayback() {
 
     return true;
   } catch (error) {
-    console.error('❌ Error resuming playback:', error);
+    console.error('âŒ Error resuming playback:', error);
     throw error;
   }
 }
@@ -726,7 +726,7 @@ export async function skipToNext() {
 
     return true;
   } catch (error) {
-    console.error('❌ Error skipping to next:', error);
+    console.error('âŒ Error skipping to next:', error);
     throw error;
   }
 }
@@ -755,7 +755,7 @@ export async function skipToPrevious() {
 
     return true;
   } catch (error) {
-    console.error('❌ Error skipping to previous:', error);
+    console.error('âŒ Error skipping to previous:', error);
     throw error;
   }
 }
@@ -796,7 +796,7 @@ export async function seekPlayback(positionMs, deviceId = null) {
 
     return true;
   } catch (error) {
-    console.error('❌ Error seeking playback:', error);
+    console.error('âŒ Error seeking playback:', error);
     throw error;
   }
 }
