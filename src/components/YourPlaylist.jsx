@@ -56,27 +56,27 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-emerald-800/30 flex flex-col">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Playlist Tracks</h2>
+    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-xl shadow-xl p-3 sm:p-4 lg:p-5 h-full border border-emerald-800/30 flex flex-col">
+      <h2 className="text-base sm:text-lg lg:text-xl font-bold text-white mb-2 sm:mb-3">Playlist Tracks</h2>
       
       {/* Loading state */}
       {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400"></div>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-400"></div>
         </div>
       )}
 
       {/* Error state */}
       {error && !loading && (
-        <div className="text-center py-12">
-          <p className="text-emerald-300 text-lg">{error}</p>
+        <div className="text-center py-8">
+          <p className="text-emerald-300 text-sm">{error}</p>
         </div>
       )}
 
       {/* No playlist selected */}
       {!selectedPlaylistId && !loading && (
-        <div className="flex justify-center items-center py-12 flex-1">
-          <p className="text-gray-400 text-lg text-center">
+        <div className="flex justify-center items-center py-8 flex-1">
+          <p className="text-gray-400 text-sm text-center">
             Select a playlist to view its tracks
           </p>
         </div>
@@ -84,15 +84,15 @@ function YourPlaylist({ selectedPlaylistId }) {
 
       {/* Tracks display */}
       {!loading && !error && tracks.length > 0 && (
-        <div className="space-y-1.5 max-h-[50vh] sm:max-h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
+        <div className="space-y-1 max-h-[50vh] sm:max-h-[500px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
           {tracks.map((track, index) => (
             <div
               key={track.id + index}
               onClick={() => handleTrackClick(track.uri)}
-              className="bg-emerald-950/50 hover:bg-emerald-900/50 rounded-lg p-2.5 border border-emerald-800/30 transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-2.5"
+              className="bg-emerald-950/50 hover:bg-emerald-900/50 rounded-lg p-2 border border-emerald-800/30 transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-2"
             >
               {/* Track Number */}
-              <div className="w-8 text-center text-gray-400 group-hover:text-emerald-300 text-sm">
+              <div className="w-7 text-center text-gray-400 group-hover:text-emerald-300 text-xs">
                 {index + 1}
               </div>
 
@@ -101,39 +101,39 @@ function YourPlaylist({ selectedPlaylistId }) {
                 <img
                   src={track.albumImage}
                   alt={track.album}
-                  className="w-11 h-11 rounded object-cover shadow-lg"
+                  className="w-10 h-10 rounded object-cover shadow-lg"
                 />
               ) : (
-                <div className="w-11 h-11 rounded bg-emerald-800 flex items-center justify-center">
-                  <span className="text-xl">🎵</span>
+                <div className="w-10 h-10 rounded bg-emerald-800 flex items-center justify-center">
+                  <span className="text-lg">🎵</span>
                 </div>
               )}
               
               {/* Track Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base truncate group-hover:text-emerald-300 transition-colors">
+                <h3 className="text-white font-semibold text-sm truncate group-hover:text-emerald-300 transition-colors">
                   {track.name}
                 </h3>
-                <p className="text-gray-400 text-sm truncate">
+                <p className="text-gray-400 text-xs truncate">
                   {track.artists}
                 </p>
               </div>
 
               {/* Album Name */}
               <div className="hidden md:block flex-1 min-w-0">
-                <p className="text-gray-400 text-sm truncate">
+                <p className="text-gray-400 text-xs truncate">
                   {track.album}
                 </p>
               </div>
 
               {/* Duration */}
-              <div className="text-gray-400 text-sm">
+              <div className="text-gray-400 text-xs">
                 {formatDuration(track.duration)}
               </div>
 
               {/* Play Button (visible on hover) */}
               <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg className="w-8 h-8 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-6 h-6 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                 </svg>
               </div>
@@ -144,9 +144,9 @@ function YourPlaylist({ selectedPlaylistId }) {
 
       {/* No tracks in playlist */}
       {!loading && !error && selectedPlaylistId && tracks.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-emerald-300 text-lg">This playlist is empty</p>
-          <p className="text-gray-400 text-sm mt-2">Add some tracks in Spotify!</p>
+        <div className="text-center py-8">
+          <p className="text-emerald-300 text-sm">This playlist is empty</p>
+          <p className="text-gray-400 text-xs mt-1">Add some tracks in Spotify!</p>
         </div>
       )}
     </div>

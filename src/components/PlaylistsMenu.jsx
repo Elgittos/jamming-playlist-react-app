@@ -26,10 +26,10 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (loading) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400"></div>
+      <div className="w-full bg-gradient-to-br from-indigo-900/40 via-purple-950/40 to-black/40 rounded-lg shadow-lg p-3 border border-indigo-800/20">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-white">Playlists</h2>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-400"></div>
         </div>
       </div>
     );
@@ -37,58 +37,34 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (error) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <p className="text-indigo-300 text-center py-12">{error}</p>
+      <div className="w-full bg-gradient-to-br from-indigo-900/40 via-purple-950/40 to-black/40 rounded-lg shadow-lg p-3 border border-indigo-800/20">
+        <p className="text-indigo-300 text-sm">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-      
-      <div className="relative">
-        {/* Scrollable container */}
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-950">
-          {playlists.map((playlist) => (
-            <div
-              key={playlist.id}
-              onClick={() => onPlaylistSelect(playlist.id)}
-              className={`flex-shrink-0 w-[150px] sm:w-[170px] lg:w-[190px] h-[210px] sm:h-[230px] lg:h-[250px] bg-gradient-to-br from-indigo-800/50 to-purple-900/50 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl border-2 ${
-                selectedPlaylistId === playlist.id 
-                  ? 'border-indigo-400 shadow-lg shadow-indigo-500/50' 
-                  : 'border-indigo-800/30'
-              }`}
-            >
-              {/* Playlist Image */}
-              <div className="h-[120px] sm:h-[135px] lg:h-[160px] w-full overflow-hidden">
-                {playlist.images && playlist.images[0] ? (
-                  <img
-                    src={playlist.images[0].url}
-                    alt={playlist.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white/50" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-
-              {/* Playlist Info */}
-              <div className="p-3">
-                <h3 className="text-white font-semibold text-xs sm:text-sm line-clamp-2 mb-1">
-                  {playlist.name}
-                </h3>
-                <p className="text-indigo-300 text-[11px] sm:text-xs">
-                  {playlist.tracks.total} tracks
-                </p>
-              </div>
-            </div>
-          ))}
+    <div className="w-full bg-gradient-to-br from-indigo-900/40 via-purple-950/40 to-black/40 rounded-lg shadow-lg p-3 border border-indigo-800/20">
+      <div className="flex items-center gap-3">
+        <h2 className="text-sm font-semibold text-white flex-shrink-0">Playlists</h2>
+        
+        {/* Horizontal scrollable playlist strip */}
+        <div className="flex-1 overflow-x-auto">
+          <div className="flex gap-2 pb-1">
+            {playlists.map((playlist) => (
+              <button
+                key={playlist.id}
+                onClick={() => onPlaylistSelect(playlist.id)}
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedPlaylistId === playlist.id 
+                    ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/30' 
+                    : 'bg-indigo-800/50 text-indigo-200 hover:bg-indigo-700/60 hover:text-white'
+                }`}
+              >
+                {playlist.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
