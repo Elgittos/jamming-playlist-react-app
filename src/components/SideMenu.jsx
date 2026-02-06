@@ -10,13 +10,15 @@ function scrollToSection(sectionId) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function SideMenu({ theme, onThemeChange, onHome }) {
+function SideMenu({ theme, onThemeChange, onHome, onNavigate }) {
   const handleHomeClick = () => {
     onHome?.();
+    onNavigate?.();
   };
 
   const handleSectionNav = (sectionId) => {
     scrollToSection(sectionId);
+    onNavigate?.();
   };
 
   return (
