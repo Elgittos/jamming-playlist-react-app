@@ -12,7 +12,8 @@ function PlayingNow() {
     togglePlayPause,
     next,
     previous,
-    seekToMs
+    seekToMs,
+    recentlyPlayed
   } = usePlayer();
 
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -73,7 +74,6 @@ function PlayingNow() {
     activePointerIdRef.current = null;
 
     try {
-      // Spec requirement: seek and resume playback on release
       await seekToMs(finalMs, { resume: true });
     } catch (error) {
       console.error('Seek error:', error);
@@ -82,7 +82,6 @@ function PlayingNow() {
 
   useEffect(() => {
     if (!isScrubbing) return;
-    // Keep scrub preview stable if track changes under us
     if (!durationMs) {
       setIsScrubbing(false);
     }
@@ -120,25 +119,32 @@ function PlayingNow() {
     }
   };
 
+  // Calculate session stats
+  const sessionTracksCount = recentlyPlayed.length;
+
   return (
     <div
-      className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-fuchsia-800/30 flex flex-col"
+      className="w-full theme-card rounded-xl shadow-2xl p-4 sm:p-5 border flex flex-col"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Playing Now</h2>
-        {/* Playing status badge moved to header */}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+          <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+          </svg>
+          Playing Now
+        </h2>
         {!loading && playbackState?.item && (
           <div>
             {isPlaying ? (
-              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-green-500/20 text-green-400 rounded-full">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                 Playing
               </span>
             ) : (
-              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-gray-500/20 text-gray-400 rounded-full">
-                <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-gray-500/20 text-gray-400 rounded-full">
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
                 Paused
               </span>
             )}
@@ -147,101 +153,123 @@ function PlayingNow() {
       </div>
       
       {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-400"></div>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-fuchsia-400"></div>
         </div>
       )}
 
       {!loading && !playbackState?.item && (
-        <p className="text-gray-400 text-center py-10">
-          {isAuthed ? 'Click any song to start playing!' : 'Login to Spotify to start playing.'}
-        </p>
+        <div className="text-center py-8">
+          <svg className="w-16 h-16 mx-auto text-purple-400/50 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+          <p className="text-gray-400">
+            {isAuthed ? 'Click any song to start playing!' : 'Login to Spotify to start playing.'}
+          </p>
+        </div>
       )}
 
       {!loading && playbackState?.item && (
-        <div className="flex-1 flex flex-col justify-center space-y-4">
-          {/* Large Album Art - takes most space */}
-          <div className="flex justify-center flex-1 items-center">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Album Art - Compact */}
+          <div className="flex-shrink-0 flex justify-center lg:justify-start">
             <img
               src={playbackState.item.album.images[0]?.url}
               alt={playbackState.item.album.name}
-              className="w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[360px] 2xl:max-w-[400px] max-h-[220px] sm:max-h-[280px] lg:max-h-[360px] 2xl:max-h-[400px] rounded-xl shadow-2xl object-contain"
+              className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-lg shadow-xl object-cover"
             />
           </div>
 
-          {/* Compact Track Info Below */}
-          <div className="text-center space-y-2 w-full">
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-1 px-4">
-              {playbackState.item.name}
-            </h3>
-            <p className="text-sm sm:text-base lg:text-lg text-gray-300 line-clamp-1 px-4">
-              {playbackState.item.artists.map(a => a.name).join(', ')}
-            </p>
-            <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 px-4">
-              {playbackState.item.album.name}
-            </p>
-          </div>
-
-          {/* Controls */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-4 sm:gap-6">
-              <button
-                onClick={previous}
-                className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
-                </svg>
-              </button>
-              
-              <button
-                onClick={togglePlayPause}
-                className="p-4 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all hover:scale-110 shadow-lg"
-              >
-                {isPlaying ? (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+          {/* Track Info & Controls - Compact */}
+          <div className="flex-1 flex flex-col justify-between min-w-0">
+            {/* Track Details */}
+            <div className="space-y-2">
+              <h3 className="text-lg sm:text-xl font-bold text-white line-clamp-2">
+                {playbackState.item.name}
+              </h3>
+              <p className="text-sm sm:text-base text-purple-300 line-clamp-1">
+                {playbackState.item.artists.map(a => a.name).join(', ')}
+              </p>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
+                <span className="flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
                   </svg>
-                ) : (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
+                  {playbackState.item.album.name}
+                </span>
+                {playbackState.item.album.release_date && (
+                  <span>• {new Date(playbackState.item.album.release_date).getFullYear()}</span>
                 )}
-              </button>
-              
-              <button
-                onClick={next}
-                className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
-                </svg>
-              </button>
+                {sessionTracksCount > 0 && (
+                  <span>• {sessionTracksCount} tracks this session</span>
+                )}
+              </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="space-y-2 w-full max-w-6xl mx-auto">
-              <div
-                ref={progressBarRef}
-                role="slider"
-                aria-label="Seek"
-                aria-valuemin={0}
-                aria-valuemax={durationMs || 0}
-                aria-valuenow={Math.floor(displayProgressMs)}
-                className="h-4 bg-gray-700/90 rounded-full overflow-hidden w-full touch-none select-none cursor-pointer"
-                onPointerDown={handleScrubStart}
-                onPointerMove={handleScrubMove}
-                onPointerUp={handleScrubEnd}
-                onPointerCancel={handleScrubEnd}
-              >
-                <div
-                  className="h-full bg-gradient-to-r from-fuchsia-600 via-purple-500 to-fuchsia-600"
-                  style={{ width: `${progressPercent}%` }}
-                />
+            {/* Controls - Compact */}
+            <div className="space-y-3 mt-4">
+              <div className="flex items-center justify-center gap-3 sm:gap-4">
+                <button
+                  onClick={previous}
+                  className="p-2.5 rounded-full bg-purple-800/30 hover:bg-purple-700/50 text-white transition-all hover:scale-110"
+                  aria-label="Previous"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
+                  </svg>
+                </button>
+                
+                <button
+                  onClick={togglePlayPause}
+                  className="p-3 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all hover:scale-110 shadow-lg"
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+                
+                <button
+                  onClick={next}
+                  className="p-2.5 rounded-full bg-purple-800/30 hover:bg-purple-700/50 text-white transition-all hover:scale-110"
+                  aria-label="Next"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
+                  </svg>
+                </button>
               </div>
-              <div className="flex justify-between text-sm text-gray-400">
-                <span>{formatTime(displayProgressMs || 0)}</span>
-                <span>{formatTime(playbackState.item.duration_ms)}</span>
+
+              {/* Progress Bar - Compact */}
+              <div className="space-y-1.5">
+                <div
+                  ref={progressBarRef}
+                  role="slider"
+                  aria-label="Seek"
+                  aria-valuemin={0}
+                  aria-valuemax={durationMs || 0}
+                  aria-valuenow={Math.floor(displayProgressMs)}
+                  className="h-2.5 bg-gray-700/50 rounded-full overflow-hidden w-full touch-none select-none cursor-pointer"
+                  onPointerDown={handleScrubStart}
+                  onPointerMove={handleScrubMove}
+                  onPointerUp={handleScrubEnd}
+                  onPointerCancel={handleScrubEnd}
+                >
+                  <div
+                    className="h-full bg-gradient-to-r from-fuchsia-600 via-purple-500 to-fuchsia-600"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-gray-400">
+                  <span>{formatTime(displayProgressMs || 0)}</span>
+                  <span>{formatTime(playbackState.item.duration_ms)}</span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,5 +1,54 @@
 @import "tailwindcss";
 
+/* Theme Variables */
+:root[data-theme="original"],
+:root {
+  --bg-primary: linear-gradient(135deg, #4c1d95 0%, #5b21b6 50%, #000000 100%);
+  --bg-card: linear-gradient(135deg, rgba(76, 29, 149, 0.5) 0%, rgba(91, 33, 182, 0.3) 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #d8b4fe;
+  --border-color: rgba(139, 92, 246, 0.3);
+  --accent-color: #a855f7;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #020617 100%);
+  --bg-card: rgba(30, 41, 59, 0.6);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: rgba(71, 85, 105, 0.3);
+  --accent-color: #3b82f6;
+}
+
+:root[data-theme="light"] {
+  --bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-color: rgba(203, 213, 225, 0.5);
+  --accent-color: #3b82f6;
+}
+
+/* Theme Utility Classes */
+.theme-bg {
+  background: var(--bg-primary);
+}
+
+.theme-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.theme-text {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
 html,
 body,
 #root {
