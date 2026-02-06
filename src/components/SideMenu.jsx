@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const MOBILE_MEDIA_QUERY = '(max-width: 1024px)';
 
