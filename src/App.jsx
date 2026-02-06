@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import RecentlyPlayed from './components/RecentlyPlayed'
 import YourPlaylist from './components/YourPlaylist'
@@ -9,9 +9,37 @@ import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
 import SideMenu from './components/SideMenu'
 
+const THEME_GRADIENTS = {
+  dark: 'from-gray-900 via-slate-900 to-black',
+  light: 'from-purple-50 via-violet-50 to-white',
+  original: 'from-purple-950 via-violet-950 to-black'
+};
+
 function App() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    return localStorage.getItem('app-theme') || 'original';
+  });
   const topRef = useRef(null);
+
+  // Listen for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          const newTheme = document.documentElement.getAttribute('data-theme') || 'original';
+          setCurrentTheme(newTheme);
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const handlePlaylistSelect = (playlistId) => {
     setSelectedPlaylistId(playlistId);
@@ -25,11 +53,13 @@ function App() {
     // If there's a search bar, you might want to clear it too
   };
 
+  const backgroundGradient = THEME_GRADIENTS[currentTheme] || THEME_GRADIENTS.original;
+
   return (
     <>
       <SideMenu onHomeClick={handleHomeClick} />
       
-      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black lg:pl-16">
+      <main className={`min-h-screen bg-gradient-to-br ${backgroundGradient} lg:pl-16`}>
         <div ref={topRef} className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-3 sm:gap-4 p-4 md:p-5 lg:p-6">
         {/* Spotify Web Player */}
         <SpotifyPlayer />

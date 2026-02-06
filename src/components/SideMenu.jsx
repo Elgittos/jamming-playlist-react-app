@@ -25,7 +25,9 @@ export default function SideMenu({ onHomeClick }) {
 
   useEffect(() => {
     localStorage.setItem('app-theme', selectedTheme);
-    // Apply theme to document
+    // Apply theme to document root for potential future theme-based styling
+    // Note: Currently themes only affect the main background gradient in App.jsx
+    // Future enhancement: Use this data attribute for comprehensive theming across all components
     document.documentElement.setAttribute('data-theme', selectedTheme);
   }, [selectedTheme]);
 

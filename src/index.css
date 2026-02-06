@@ -8,6 +8,20 @@ body,
   overflow-x: hidden;
 }
 
+/* Theme-specific text colors for accessibility */
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="light"] .text-white {
+  color: rgb(0, 0, 0) !important;
+}
+
+[data-theme="light"] .text-gray-400,
+[data-theme="light"] .text-gray-300 {
+  color: rgb(55, 65, 81) !important;
+}
+
 /* Custom Scrollbar Styling - Purple Theme */
 ::-webkit-scrollbar {
   width: 24px;
