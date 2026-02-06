@@ -4,6 +4,7 @@ import { usePlayer } from '../hooks/usePlayer';
 function RecentlyPlayed({ compact = false }) {
   const { isAuthed, recentlyPlayed, isRecentlyPlayedSeeded } = usePlayer();
   const loading = !isRecentlyPlayedSeeded;
+  const padY = compact ? 'py-4' : 'py-8';
 
   return (
     <div className={`w-full surface-panel rounded-2xl ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'}`}>
@@ -13,13 +14,13 @@ function RecentlyPlayed({ compact = false }) {
       
       {/* Loading state */}
       {loading && (
-        <div className="flex justify-center items-center py-8">
+        <div className={`flex justify-center items-center ${padY}`}>
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 accent-border"></div>
         </div>
       )}
 
       {!loading && !isAuthed && (
-        <div className="text-center py-8">
+        <div className={`text-center ${padY}`}>
           <p className="accent-text-soft text-sm sm:text-base">Please login to see your recently played tracks</p>
         </div>
       )}
@@ -38,7 +39,7 @@ function RecentlyPlayed({ compact = false }) {
 
       {/* No tracks state */}
       {!loading && isAuthed && recentlyPlayed.length === 0 && (
-        <div className="text-center py-8">
+        <div className={`text-center ${padY}`}>
           <p className="accent-text-soft text-sm sm:text-base">No recently played tracks found</p>
         </div>
       )}

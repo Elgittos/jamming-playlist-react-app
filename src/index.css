@@ -4,6 +4,20 @@
 :root[data-theme='original'] {
   --accent-rgb: 217 70 239;
   --accent2-rgb: 99 102 241;
+  --text-rgb: 255 255 255;
+  --text-muted-rgb: 209 213 219;
+  --text-subtle-rgb: 156 163 175;
+  --divider: rgba(255, 255, 255, 0.12);
+  --input-bg: rgba(0, 0, 0, 0.22);
+  --input-border: rgba(255, 255, 255, 0.18);
+  --scroll-track: rgba(15, 23, 42, 0.35);
+  --scroll-thumb-bg: linear-gradient(180deg, rgb(var(--accent-rgb)) 0%, rgb(var(--accent2-rgb)) 100%);
+  --scroll-thumb-bg-hover: linear-gradient(
+    180deg,
+    rgba(var(--accent-rgb), 0.9) 0%,
+    rgba(var(--accent2-rgb), 0.9) 100%
+  );
+  --scroll-thumb-color: rgb(var(--accent2-rgb));
   --app-bg:
     radial-gradient(circle at 12% 0%, rgba(217, 70, 239, 0.62) 0%, rgba(99, 102, 241, 0.26) 38%, rgba(11, 7, 23, 1) 100%),
     radial-gradient(circle at 78% 18%, rgba(168, 85, 247, 0.32) 0%, rgba(0, 0, 0, 0) 60%),
@@ -19,14 +33,24 @@
 :root[data-theme='dark'] {
   --accent-rgb: 217 70 239;
   --accent2-rgb: 168 85 247;
+  --text-rgb: 255 255 255;
+  --text-muted-rgb: 209 213 219;
+  --text-subtle-rgb: 156 163 175;
+  --divider: rgba(255, 255, 255, 0.12);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(255, 255, 255, 0.16);
+  --scroll-track: rgba(255, 255, 255, 0.06);
+  --scroll-thumb-bg: rgba(255, 255, 255, 0.22);
+  --scroll-thumb-bg-hover: rgba(255, 255, 255, 0.3);
+  --scroll-thumb-color: rgba(255, 255, 255, 0.24);
   --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(168, 85, 247, 0.34) 0%, rgba(2, 6, 23, 1) 62%),
-    radial-gradient(circle at 72% 14%, rgba(236, 72, 153, 0.16) 0%, rgba(0, 0, 0, 0) 56%),
-    linear-gradient(180deg, #090014 0%, #02010a 100%);
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0) 52%),
+    radial-gradient(circle at 80% 14%, rgba(168, 85, 247, 0.18) 0%, rgba(0, 0, 0, 0) 58%),
+    linear-gradient(180deg, #0b0e12 0%, #000000 72%);
   --surface-bg:
     linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 22%, rgba(0, 0, 0, 0.4) 100%),
-    linear-gradient(145deg, rgba(15, 3, 31, 0.82), rgba(2, 6, 23, 0.94));
-  --surface-border: rgba(var(--accent2-rgb), 0.22);
+    linear-gradient(145deg, rgba(9, 11, 15, 0.92), rgba(0, 0, 0, 0.96));
+  --surface-border: rgba(255, 255, 255, 0.12);
   --surface-shadow: 0 20px 54px rgba(0, 0, 0, 0.66);
   --surface-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.1) inset;
 }
@@ -34,16 +58,21 @@
 :root[data-theme='light'] {
   --accent-rgb: 236 72 153;
   --accent2-rgb: 99 102 241;
-  --app-bg:
-    radial-gradient(circle at 10% 0%, rgba(236, 72, 153, 0.3) 0%, rgba(99, 102, 241, 0.22) 42%, rgba(15, 23, 42, 0.92) 100%),
-    radial-gradient(circle at 72% 20%, rgba(217, 70, 239, 0.18) 0%, rgba(0, 0, 0, 0) 60%),
-    linear-gradient(180deg, #1b0a3a 0%, #070014 100%);
-  --surface-bg:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 22%, rgba(0, 0, 0, 0.27) 100%),
-    linear-gradient(145deg, rgba(40, 14, 86, 0.65), rgba(10, 4, 24, 0.88));
-  --surface-border: rgba(var(--accent-rgb), 0.22);
-  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.5);
-  --surface-glow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  --text-rgb: 3 7 18;
+  --text-muted-rgb: 55 65 81;
+  --text-subtle-rgb: 107 114 128;
+  --divider: rgba(15, 23, 42, 0.12);
+  --input-bg: rgba(255, 255, 255, 0.92);
+  --input-border: rgba(15, 23, 42, 0.14);
+  --scroll-track: rgba(15, 23, 42, 0.08);
+  --scroll-thumb-bg: rgba(15, 23, 42, 0.22);
+  --scroll-thumb-bg-hover: rgba(15, 23, 42, 0.3);
+  --scroll-thumb-color: rgba(15, 23, 42, 0.28);
+  --app-bg: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+  --surface-bg: #ffffff;
+  --surface-border: rgba(15, 23, 42, 0.12);
+  --surface-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+  --surface-glow: 0 0 0 1px rgba(15, 23, 42, 0.04) inset;
 }
 
 html,
@@ -58,7 +87,12 @@ body,
 body {
   margin: 0;
   background: var(--app-bg);
-  color: #fff;
+  color: rgb(var(--text-rgb));
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] body {
+  color-scheme: light;
 }
 
 .app-bg {
@@ -70,6 +104,10 @@ body {
   border: 1px solid var(--surface-border);
   box-shadow: var(--surface-shadow), var(--surface-glow);
   backdrop-filter: blur(8px);
+}
+
+.surface-panel {
+  color: rgb(var(--text-rgb));
 }
 
 .accent-border {
@@ -116,15 +154,20 @@ body {
 }
 
 .search-input {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: rgb(var(--text-rgb));
 }
 
 .search-input:focus {
   outline: none;
   border-color: rgba(var(--accent-rgb), 0.6);
   box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.14);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--input-bg);
+}
+
+.search-input::placeholder {
+  color: rgba(var(--text-muted-rgb), 0.8);
 }
 
 ::-webkit-scrollbar {
@@ -133,21 +176,119 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.35);
+  background: var(--scroll-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgb(var(--accent-rgb)) 0%, rgb(var(--accent2-rgb)) 100%);
+  background: var(--scroll-thumb-bg);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.9) 0%, rgba(var(--accent2-rgb), 0.9) 100%);
+  background: var(--scroll-thumb-bg-hover);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--accent2-rgb)) rgba(15, 23, 42, 0.35);
+  scrollbar-color: var(--scroll-thumb-color) var(--scroll-track);
+}
+
+/* Light theme: map dark-only Tailwind utility colors inside panels/cards to readable light-mode equivalents */
+:root[data-theme='light'] .surface-panel .text-white,
+:root[data-theme='light'] .surface-panel.text-white,
+:root[data-theme='light'] .genre-card .text-white,
+:root[data-theme='light'] .song-card .text-white {
+  color: rgb(var(--text-rgb));
+}
+
+:root[data-theme='light'] .surface-panel .text-white\/90,
+:root[data-theme='light'] .surface-panel .text-white\/85,
+:root[data-theme='light'] .surface-panel .text-white\/80,
+:root[data-theme='light'] .genre-card .text-white\/80,
+:root[data-theme='light'] .song-card .text-white\/80 {
+  color: rgba(var(--text-rgb), 0.86);
+}
+
+:root[data-theme='light'] .surface-panel .text-white\/70,
+:root[data-theme='light'] .surface-panel .text-white\/55,
+:root[data-theme='light'] .genre-card .text-white\/70,
+:root[data-theme='light'] .song-card .text-white\/70 {
+  color: rgba(var(--text-muted-rgb), 0.95);
+}
+
+:root[data-theme='light'] .surface-panel .text-gray-200,
+:root[data-theme='light'] .genre-card .text-gray-200,
+:root[data-theme='light'] .song-card .text-gray-200 {
+  color: rgb(var(--text-muted-rgb));
+}
+
+:root[data-theme='light'] .surface-panel .text-gray-300,
+:root[data-theme='light'] .genre-card .text-gray-300,
+:root[data-theme='light'] .song-card .text-gray-300 {
+  color: rgb(var(--text-muted-rgb));
+}
+
+:root[data-theme='light'] .surface-panel .text-gray-400,
+:root[data-theme='light'] .genre-card .text-gray-400,
+:root[data-theme='light'] .song-card .text-gray-400 {
+  color: rgb(var(--text-subtle-rgb));
+}
+
+:root[data-theme='light'] .surface-panel .border-white\/10,
+:root[data-theme='light'] .genre-card .border-white\/10,
+:root[data-theme='light'] .song-card .border-white\/10,
+:root[data-theme='light'] .surface-panel .border-t.border-white\/10 {
+  border-color: var(--divider);
+}
+
+:root[data-theme='light'] .surface-panel .bg-white\/5,
+:root[data-theme='light'] .genre-card .bg-white\/5,
+:root[data-theme='light'] .song-card .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.03);
+}
+
+:root[data-theme='light'] .surface-panel .bg-white\/10,
+:root[data-theme='light'] .genre-card .bg-white\/10,
+:root[data-theme='light'] .song-card .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.06);
+}
+
+:root[data-theme='light'] .surface-panel .hover\:bg-white\/5:hover,
+:root[data-theme='light'] .genre-card .hover\:bg-white\/5:hover,
+:root[data-theme='light'] .song-card .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.05);
+}
+
+:root[data-theme='light'] .surface-panel .hover\:bg-white\/10:hover,
+:root[data-theme='light'] .genre-card .hover\:bg-white\/10:hover,
+:root[data-theme='light'] .song-card .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme='light'] .surface-panel .bg-slate-700\/65 {
+  background-color: rgba(15, 23, 42, 0.12);
+}
+
+/* Light theme: make gradient-heavy cards truly white */
+:root[data-theme='light'] .genre-card,
+:root[data-theme='light'] .song-card {
+  background: #ffffff !important;
+  border-color: var(--divider) !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+}
+
+/* Dark theme: remove colorful gradients from genre/song cards (metallic black look) */
+:root[data-theme='dark'] .genre-card,
+:root[data-theme='dark'] .song-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(0, 0, 0, 0.0) 38%),
+    linear-gradient(180deg, #0b0e12 0%, #000000 70%) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 20px 54px rgba(0, 0, 0, 0.7);
+}
+
+/* Keep gradient buttons readable in light theme */
+:root[data-theme='light'] .accent-btn {
+  color: #ffffff;
 }
 
 @media (max-width: 640px) {

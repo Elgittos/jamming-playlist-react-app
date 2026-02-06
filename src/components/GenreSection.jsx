@@ -42,12 +42,12 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo, compact = 
   }, [genre]);
 
   return (
-    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'} border border-opacity-30`}>
+    <div className={`genre-card w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'} border border-opacity-30`}>
       <h2 className={`${compact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl lg:text-2xl'} font-bold text-white mb-2.5 sm:mb-3`}>{genre}</h2>
       
       {loading && (
         <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 accent-border"></div>
         </div>
       )}
 
