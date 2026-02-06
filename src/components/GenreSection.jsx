@@ -60,7 +60,7 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo, compact = 
       {!loading && !error && songs.length > 0 && (
         <div className="relative">
           {/* Scrollable container */}
-          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sky-700 scrollbar-track-sky-950">
+          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin">
             {songs.map((song) => (
               <SongCard key={song.id} song={song} compact={compact} />
             ))}

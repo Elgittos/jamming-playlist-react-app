@@ -130,7 +130,7 @@ function SearchBar({ resetSignal = 0 }) {
   };
 
   return (
-    <div ref={dropdownRef} className="w-full relative">
+    <div ref={dropdownRef} className="w-full relative z-[80]">
       <form onSubmit={handleSubmit}>
         <div className="relative group">
           <input
@@ -150,15 +150,15 @@ function SearchBar({ resetSignal = 0 }) {
               }
             }}
             placeholder="Search for songs, artists, or albums..."
-            className={`w-full py-2.5 px-5 pr-12 rounded-full bg-black/25 border border-white/20 text-white placeholder-gray-300/70 focus:outline-none focus:border-cyan-400 focus:bg-black/40 transition-all duration-300 ${
-              isExpanded ? 'shadow-lg shadow-cyan-500/20' : ''
+            className={`search-input w-full py-2.5 px-5 pr-12 rounded-full text-white placeholder-gray-300/70 transition-all duration-300 ${
+              isExpanded ? 'shadow-lg shadow-black/30' : ''
             }`}
           />
           
           {/* Search icon/button */}
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="accent-btn absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!query.trim()}
           >
             {isLoading ? (
@@ -196,7 +196,7 @@ function SearchBar({ resetSignal = 0 }) {
                   setShowDropdown(false);
                 }
               }}
-              className="absolute right-14 top-1/2 -translate-y-1/2 p-1 text-sky-300 hover:text-white transition-colors"
+              className="absolute right-14 top-1/2 -translate-y-1/2 p-1 accent-text-soft hover:text-white transition-colors"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -216,15 +216,15 @@ function SearchBar({ resetSignal = 0 }) {
           {/* Search History (subtle, only when input is empty/short) */}
           {shouldShowHistory && !suggestions && (
             <div className="p-3">
-              <h3 className="text-[11px] font-bold text-sky-300 uppercase mb-2 px-2">Recent searches</h3>
+              <h3 className="text-[11px] font-bold accent-text-soft uppercase mb-2 px-2">Recent searches</h3>
               <div className="space-y-1">
                 {searchHistory.slice(0, 4).map((historyItem) => (
                   <button
                     key={historyItem}
                     onClick={() => handleHistoryClick(historyItem)}
-                    className="w-full flex items-center gap-2.5 p-2 hover:bg-cyan-800/20 rounded-lg transition-all duration-200 text-left"
+                    className="w-full flex items-center gap-2.5 p-2 rounded-lg transition-all duration-200 text-left hover:bg-white/5"
                   >
-                    <svg className="w-4 h-4 text-sky-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 accent-text-soft flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-5.2-5.2m2.2-5.3a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <span className="text-sm text-white/90 truncate">{historyItem}</span>
@@ -237,12 +237,12 @@ function SearchBar({ resetSignal = 0 }) {
           {/* Tracks Section */}
           {suggestions?.tracks?.items?.length > 0 && (
             <div className="p-3">
-              <h3 className="text-xs font-bold text-cyan-400 uppercase mb-2 px-2">Tracks</h3>
+              <h3 className="text-xs font-bold accent-text uppercase mb-2 px-2">Tracks</h3>
               {suggestions.tracks.items.map((track) => (
                 <button
                   key={track.id}
                   onClick={() => handleSuggestionClick(track, 'track')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-cyan-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className="w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group hover:bg-white/5"
                 >
                   <img
                     src={track.album.images[2]?.url || track.album.images[0]?.url}
@@ -250,14 +250,14 @@ function SearchBar({ resetSignal = 0 }) {
                     className="w-12 h-12 rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-cyan-300">
+                    <p className="text-white font-medium truncate">
                       {track.name}
                     </p>
                     <p className="text-gray-400 text-sm truncate">
                       {track.artists.map(a => a.name).join(', ')}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-sky-800/50 px-2 py-1 rounded">Track</span>
+                  <span className="text-xs text-white/70 bg-white/10 px-2 py-1 rounded">Track</span>
                 </button>
               ))}
             </div>
@@ -265,13 +265,13 @@ function SearchBar({ resetSignal = 0 }) {
 
           {/* Artists Section */}
           {suggestions?.artists?.items?.length > 0 && (
-            <div className="p-3 border-t border-sky-700/50">
-              <h3 className="text-xs font-bold text-cyan-400 uppercase mb-2 px-2">Artists</h3>
+            <div className="p-3 border-t border-white/10">
+              <h3 className="text-xs font-bold accent-text uppercase mb-2 px-2">Artists</h3>
               {suggestions.artists.items.map((artist) => (
                 <button
                   key={artist.id}
                   onClick={() => handleSuggestionClick(artist, 'artist')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-cyan-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className="w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group hover:bg-white/5"
                 >
                   <img
                     src={artist.images[2]?.url || artist.images[0]?.url || 'https://via.placeholder.com/48/0E7490/FFFFFF?text=Artist'}
@@ -279,14 +279,14 @@ function SearchBar({ resetSignal = 0 }) {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-cyan-300">
+                    <p className="text-white font-medium truncate">
                       {artist.name}
                     </p>
                     <p className="text-gray-400 text-sm capitalize">
                       {artist.genres[0] || 'Artist'}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-sky-800/50 px-2 py-1 rounded">Artist</span>
+                  <span className="text-xs text-white/70 bg-white/10 px-2 py-1 rounded">Artist</span>
                 </button>
               ))}
             </div>
@@ -294,13 +294,13 @@ function SearchBar({ resetSignal = 0 }) {
 
           {/* Albums Section */}
           {suggestions?.albums?.items?.length > 0 && (
-            <div className="p-3 border-t border-sky-700/50">
-              <h3 className="text-xs font-bold text-cyan-400 uppercase mb-2 px-2">Albums</h3>
+            <div className="p-3 border-t border-white/10">
+              <h3 className="text-xs font-bold accent-text uppercase mb-2 px-2">Albums</h3>
               {suggestions.albums.items.map((album) => (
                 <button
                   key={album.id}
                   onClick={() => handleSuggestionClick(album, 'album')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-cyan-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className="w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group hover:bg-white/5"
                 >
                   <img
                     src={album.images[2]?.url || album.images[0]?.url}
@@ -308,14 +308,14 @@ function SearchBar({ resetSignal = 0 }) {
                     className="w-12 h-12 rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-cyan-300">
+                    <p className="text-white font-medium truncate">
                       {album.name}
                     </p>
                     <p className="text-gray-400 text-sm truncate">
                       {album.artists.map(a => a.name).join(', ')}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-sky-800/50 px-2 py-1 rounded">Album</span>
+                  <span className="text-xs text-white/70 bg-white/10 px-2 py-1 rounded">Album</span>
                 </button>
               ))}
             </div>

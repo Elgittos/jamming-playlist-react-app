@@ -54,8 +54,63 @@ body {
 .surface-panel {
   background: var(--surface-bg);
   border: 1px solid var(--surface-border);
-  box-shadow: var(--surface-shadow);
+  box-shadow: var(--surface-shadow), var(--surface-glow);
   backdrop-filter: blur(8px);
+}
+
+.accent-border {
+  border-color: rgba(var(--accent-rgb), 0.35);
+}
+
+.accent-text {
+  color: rgb(var(--accent-rgb));
+}
+
+.accent-text-soft {
+  color: rgba(var(--accent-rgb), 0.75);
+}
+
+.accent-bg {
+  background-color: rgba(var(--accent-rgb), 0.24);
+}
+
+.accent-bg-strong {
+  background-color: rgba(var(--accent-rgb), 0.55);
+}
+
+.accent-bg-hover:hover {
+  background-color: rgba(var(--accent-rgb), 0.34);
+}
+
+.accent-btn {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.95), rgba(var(--accent2-rgb), 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.accent-btn:hover {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 1), rgba(var(--accent2-rgb), 1));
+}
+
+.accent-gradient {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--accent-rgb)) 0%,
+    rgb(var(--accent2-rgb)) 50%,
+    rgb(var(--accent-rgb)) 100%
+  );
+}
+
+.search-input {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(var(--accent-rgb), 0.6);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.14);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 ::-webkit-scrollbar {
@@ -68,17 +123,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #06b6d4 0%, #0284c7 100%);
+  background: linear-gradient(180deg, rgb(var(--accent-rgb)) 0%, rgb(var(--accent2-rgb)) 100%);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #22d3ee 0%, #0ea5e9 100%);
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.9) 0%, rgba(var(--accent2-rgb), 0.9) 100%);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #0284c7 rgba(15, 23, 42, 0.35);
+  scrollbar-color: rgb(var(--accent2-rgb)) rgba(15, 23, 42, 0.35);
 }
 
 @media (max-width: 640px) {
