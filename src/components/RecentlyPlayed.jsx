@@ -6,8 +6,8 @@ function RecentlyPlayed() {
   const loading = !isRecentlyPlayedSeeded;
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-fuchsia-800/30">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Recently Played</h2>
+    <div className="w-full theme-card rounded-xl shadow-xl p-4 sm:p-5">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Recently Played</h2>
       
       {/* Loading state */}
       {loading && (

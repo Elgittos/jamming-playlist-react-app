@@ -56,8 +56,8 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-emerald-800/30 flex flex-col">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Playlist Tracks</h2>
+    <div className="w-full theme-card rounded-xl shadow-xl p-4 sm:p-5 flex flex-col">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Playlist Tracks</h2>
       
       {/* Loading state */}
       {loading && (
