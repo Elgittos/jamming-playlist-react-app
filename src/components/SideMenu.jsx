@@ -19,7 +19,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
   });
-  const [isDesktopExpanded, setIsDesktopExpanded] = useState(true);
+  const isDesktopExpanded = true; // Always expanded on desktop
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState(false);
   const collapseTimeoutRef = useRef(null);
