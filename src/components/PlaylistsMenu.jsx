@@ -32,7 +32,7 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
           <button
             type="button"
             onClick={() => onPlaylistSelect(null)}
-            className="text-xs sm:text-sm text-cyan-300 hover:text-cyan-200"
+            className="text-xs sm:text-sm accent-text-soft hover:text-white"
           >
             Clear
           </button>
@@ -42,7 +42,7 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
       {loading && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {[1, 2, 3, 4, 5].map((item) => (
-            <div key={item} className="h-11 w-28 shrink-0 animate-pulse rounded-full bg-sky-900/35" />
+            <div key={item} className="h-11 w-28 shrink-0 animate-pulse rounded-full bg-white/10" />
           ))}
         </div>
       )}
@@ -57,8 +57,8 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
               onClick={() => onPlaylistSelect(null)}
               className={`h-11 shrink-0 rounded-full border px-4 text-sm transition-colors ${
                 selectedPlaylistId === null
-                  ? 'border-cyan-400 bg-cyan-600/30 text-white'
-                  : 'border-sky-700/35 bg-slate-900/35 text-sky-100 hover:bg-sky-900/35'
+                  ? 'accent-bg accent-border text-white'
+                  : 'border-white/10 bg-white/5 text-white/90 hover:bg-white/10'
               }`}
             >
               All Playlists
@@ -71,8 +71,8 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
                 onClick={() => onPlaylistSelect(playlist.id)}
                 className={`h-11 shrink-0 rounded-full border px-4 text-sm transition-colors ${
                   selectedPlaylistId === playlist.id
-                    ? 'border-cyan-400 bg-cyan-600/30 text-white'
-                    : 'border-sky-700/35 bg-slate-900/35 text-sky-100 hover:bg-sky-900/35'
+                    ? 'accent-bg accent-border text-white'
+                    : 'border-white/10 bg-white/5 text-white/90 hover:bg-white/10'
                 }`}
                 title={`${playlist.name} - ${playlist.tracks.total} tracks`}
               >

@@ -6,7 +6,7 @@ function RecentlyPlayed({ compact = false }) {
   const loading = !isRecentlyPlayedSeeded;
 
   return (
-    <div className={`w-full surface-panel rounded-2xl border border-cyan-800/30 ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'}`}>
+    <div className={`w-full surface-panel rounded-2xl ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'}`}>
       <h2 className={`${compact ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl'} font-bold text-white mb-2.5 sm:mb-3`}>
         Recently Played
       </h2>
@@ -14,13 +14,13 @@ function RecentlyPlayed({ compact = false }) {
       {/* Loading state */}
       {loading && (
         <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 accent-border"></div>
         </div>
       )}
 
       {!loading && !isAuthed && (
         <div className="text-center py-8">
-          <p className="text-cyan-300 text-sm sm:text-base">Please login to see your recently played tracks</p>
+          <p className="accent-text-soft text-sm sm:text-base">Please login to see your recently played tracks</p>
         </div>
       )}
 
@@ -28,7 +28,7 @@ function RecentlyPlayed({ compact = false }) {
       {!loading && isAuthed && recentlyPlayed.length > 0 && (
         <div className="relative">
           {/* Scrollable container */}
-          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-cyan-700 scrollbar-track-cyan-950">
+          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin">
             {recentlyPlayed.map((song) => (
               <SongCard key={song.id} song={song} compact />
             ))}
@@ -39,7 +39,7 @@ function RecentlyPlayed({ compact = false }) {
       {/* No tracks state */}
       {!loading && isAuthed && recentlyPlayed.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-cyan-300 text-sm sm:text-base">No recently played tracks found</p>
+          <p className="accent-text-soft text-sm sm:text-base">No recently played tracks found</p>
         </div>
       )}
     </div>

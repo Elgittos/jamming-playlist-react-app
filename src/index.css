@@ -2,24 +2,48 @@
 
 :root,
 :root[data-theme='original'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #0f2f3f 0%, #0a1927 42%, #050b12 100%);
-  --surface-bg: linear-gradient(140deg, rgba(10, 28, 41, 0.88), rgba(6, 15, 24, 0.94));
-  --surface-border: rgba(34, 211, 238, 0.24);
-  --surface-shadow: 0 16px 44px rgba(2, 8, 16, 0.52);
+  --accent-rgb: 217 70 239;
+  --accent2-rgb: 99 102 241;
+  --app-bg:
+    radial-gradient(circle at 12% 0%, rgba(217, 70, 239, 0.62) 0%, rgba(99, 102, 241, 0.26) 38%, rgba(11, 7, 23, 1) 100%),
+    radial-gradient(circle at 78% 18%, rgba(168, 85, 247, 0.32) 0%, rgba(0, 0, 0, 0) 60%),
+    linear-gradient(180deg, #1a0536 0%, #05010a 100%);
+  --surface-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 22%, rgba(0, 0, 0, 0.33) 100%),
+    linear-gradient(145deg, rgba(59, 7, 100, 0.78), rgba(11, 7, 23, 0.92));
+  --surface-border: rgba(var(--accent-rgb), 0.28);
+  --surface-shadow: 0 18px 48px rgba(0, 0, 0, 0.58);
+  --surface-glow: 0 0 0 1px rgba(var(--accent2-rgb), 0.12) inset;
 }
 
 :root[data-theme='dark'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #111827 0%, #0b1220 45%, #030712 100%);
-  --surface-bg: linear-gradient(140deg, rgba(17, 24, 39, 0.9), rgba(4, 10, 22, 0.95));
-  --surface-border: rgba(56, 189, 248, 0.24);
-  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.56);
+  --accent-rgb: 217 70 239;
+  --accent2-rgb: 168 85 247;
+  --app-bg:
+    radial-gradient(circle at 12% 0%, rgba(168, 85, 247, 0.34) 0%, rgba(2, 6, 23, 1) 62%),
+    radial-gradient(circle at 72% 14%, rgba(236, 72, 153, 0.16) 0%, rgba(0, 0, 0, 0) 56%),
+    linear-gradient(180deg, #090014 0%, #02010a 100%);
+  --surface-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 22%, rgba(0, 0, 0, 0.4) 100%),
+    linear-gradient(145deg, rgba(15, 3, 31, 0.82), rgba(2, 6, 23, 0.94));
+  --surface-border: rgba(var(--accent2-rgb), 0.22);
+  --surface-shadow: 0 20px 54px rgba(0, 0, 0, 0.66);
+  --surface-glow: 0 0 0 1px rgba(var(--accent-rgb), 0.1) inset;
 }
 
 :root[data-theme='light'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #ecfeff 0%, #dbeafe 44%, #f8fafc 100%);
-  --surface-bg: linear-gradient(140deg, rgba(30, 41, 59, 0.86), rgba(15, 23, 42, 0.93));
-  --surface-border: rgba(14, 165, 233, 0.26);
-  --surface-shadow: 0 14px 36px rgba(15, 23, 42, 0.25);
+  --accent-rgb: 236 72 153;
+  --accent2-rgb: 99 102 241;
+  --app-bg:
+    radial-gradient(circle at 10% 0%, rgba(236, 72, 153, 0.3) 0%, rgba(99, 102, 241, 0.22) 42%, rgba(15, 23, 42, 0.92) 100%),
+    radial-gradient(circle at 72% 20%, rgba(217, 70, 239, 0.18) 0%, rgba(0, 0, 0, 0) 60%),
+    linear-gradient(180deg, #1b0a3a 0%, #070014 100%);
+  --surface-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 22%, rgba(0, 0, 0, 0.27) 100%),
+    linear-gradient(145deg, rgba(40, 14, 86, 0.65), rgba(10, 4, 24, 0.88));
+  --surface-border: rgba(var(--accent-rgb), 0.22);
+  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.5);
+  --surface-glow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 html,
@@ -44,8 +68,63 @@ body {
 .surface-panel {
   background: var(--surface-bg);
   border: 1px solid var(--surface-border);
-  box-shadow: var(--surface-shadow);
+  box-shadow: var(--surface-shadow), var(--surface-glow);
   backdrop-filter: blur(8px);
+}
+
+.accent-border {
+  border-color: rgba(var(--accent-rgb), 0.35);
+}
+
+.accent-text {
+  color: rgb(var(--accent-rgb));
+}
+
+.accent-text-soft {
+  color: rgba(var(--accent-rgb), 0.75);
+}
+
+.accent-bg {
+  background-color: rgba(var(--accent-rgb), 0.24);
+}
+
+.accent-bg-strong {
+  background-color: rgba(var(--accent-rgb), 0.55);
+}
+
+.accent-bg-hover:hover {
+  background-color: rgba(var(--accent-rgb), 0.34);
+}
+
+.accent-btn {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.95), rgba(var(--accent2-rgb), 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.accent-btn:hover {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 1), rgba(var(--accent2-rgb), 1));
+}
+
+.accent-gradient {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--accent-rgb)) 0%,
+    rgb(var(--accent2-rgb)) 50%,
+    rgb(var(--accent-rgb)) 100%
+  );
+}
+
+.search-input {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(var(--accent-rgb), 0.6);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.14);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 ::-webkit-scrollbar {
@@ -58,17 +137,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #06b6d4 0%, #0284c7 100%);
+  background: linear-gradient(180deg, rgb(var(--accent-rgb)) 0%, rgb(var(--accent2-rgb)) 100%);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #22d3ee 0%, #0ea5e9 100%);
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.9) 0%, rgba(var(--accent2-rgb), 0.9) 100%);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #0284c7 rgba(15, 23, 42, 0.35);
+  scrollbar-color: rgb(var(--accent2-rgb)) rgba(15, 23, 42, 0.35);
 }
 
 @media (max-width: 640px) {
