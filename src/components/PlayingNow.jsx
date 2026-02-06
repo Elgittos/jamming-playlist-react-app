@@ -124,7 +124,7 @@ function PlayingNow() {
 
   return (
     <div
-      className="surface-panel h-full rounded-2xl border border-cyan-700/30 p-3 sm:p-4 lg:p-5"
+      className="surface-panel h-full rounded-2xl p-3 sm:p-4 lg:p-5"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
@@ -134,7 +134,7 @@ function PlayingNow() {
         {!isPlaybackLoading && item && (
           <span
             className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs sm:text-sm ${
-              isPlaying ? 'bg-green-500/20 text-green-300' : 'bg-slate-800/70 text-sky-200'
+              isPlaying ? 'bg-green-500/20 text-green-300' : 'bg-white/10 text-white/80'
             }`}
           >
             <span className={`h-2 w-2 rounded-full ${isPlaying ? 'bg-green-300 animate-pulse' : 'bg-gray-300'}`} />
@@ -145,7 +145,7 @@ function PlayingNow() {
 
       {isPlaybackLoading && (
         <div className="flex items-center justify-center py-10">
-          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-cyan-400" />
+          <div className="h-10 w-10 animate-spin rounded-full border-b-2 accent-border" />
         </div>
       )}
 
@@ -172,13 +172,13 @@ function PlayingNow() {
               <p className="truncate text-xs text-gray-400 sm:text-sm">{item.album.name}</p>
 
               <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
-                <span className="rounded-full border border-sky-700/35 bg-sky-900/35 px-2.5 py-1 text-xs text-sky-100">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/85">
                   Album: {item.album.name}
                 </span>
-                <span className="rounded-full border border-sky-700/35 bg-sky-900/35 px-2.5 py-1 text-xs text-sky-100">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/85">
                   Year: {releaseYear || 'N/A'}
                 </span>
-                <span className="rounded-full border border-sky-700/35 bg-sky-900/35 px-2.5 py-1 text-xs text-sky-100">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/85">
                   Genre: {genre || 'N/A'}
                 </span>
               </div>
@@ -190,7 +190,7 @@ function PlayingNow() {
               <button
                 type="button"
                 onClick={previous}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-cyan-800/30 text-white transition-colors hover:bg-cyan-700/50"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10"
                 aria-label="Previous track"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -201,7 +201,7 @@ function PlayingNow() {
               <button
                 type="button"
                 onClick={togglePlayPause}
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-cyan-600 text-white shadow-lg transition-colors hover:bg-cyan-500"
+                className="accent-btn inline-flex h-12 w-12 items-center justify-center rounded-full text-white"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
@@ -218,7 +218,7 @@ function PlayingNow() {
               <button
                 type="button"
                 onClick={next}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-cyan-800/30 text-white transition-colors hover:bg-cyan-700/50"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10"
                 aria-label="Next track"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -242,7 +242,7 @@ function PlayingNow() {
                 onPointerCancel={handleScrubEnd}
               >
                 <div
-                  className="h-full bg-gradient-to-r from-cyan-600 via-sky-500 to-cyan-600"
+                  className="h-full accent-gradient"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -254,15 +254,15 @@ function PlayingNow() {
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-xs text-gray-200 sm:grid-cols-3">
-            <div className="rounded-lg border border-sky-700/35 bg-sky-900/35 px-2.5 py-2">
+            <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
               <p className="text-[11px] uppercase tracking-wide text-gray-300">Session Tracks</p>
               <p className="mt-0.5 text-sm font-semibold text-white">{recentlyPlayed.length}</p>
             </div>
-            <div className="rounded-lg border border-sky-700/35 bg-sky-900/35 px-2.5 py-2">
+            <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
               <p className="text-[11px] uppercase tracking-wide text-gray-300">Recent Searches</p>
               <p className="mt-0.5 text-sm font-semibold text-white">{searchHistory.length}</p>
             </div>
-            <div className="col-span-2 rounded-lg border border-sky-700/35 bg-sky-900/35 px-2.5 py-2 sm:col-span-1">
+            <div className="col-span-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 sm:col-span-1">
               <p className="text-[11px] uppercase tracking-wide text-gray-300">Playback State</p>
               <p className="mt-0.5 truncate text-sm font-semibold text-white">{playbackStatus}</p>
             </div>

@@ -1,7 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
-
-const MOBILE_MEDIA_QUERY = '(max-width: 1024px)';
-
 const THEME_OPTIONS = [
   { id: 'dark', label: 'Dark' },
   { id: 'light', label: 'Light' },
@@ -15,252 +11,81 @@ function scrollToSection(sectionId) {
 }
 
 function SideMenu({ theme, onThemeChange, onHome }) {
-  const [isMobileOrTablet, setIsMobileOrTablet] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
-  });
-  const [isDesktopExpanded, setIsDesktopExpanded] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState(false);
-  const collapseTimeoutRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-
-    const media = window.matchMedia(MOBILE_MEDIA_QUERY);
-    const handleChange = (event) => {
-      setIsMobileOrTablet(event.matches);
-      setIsThemeSubmenuOpen(false);
-      if (!event.matches) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    setIsMobileOrTablet(media.matches);
-    if (media.addEventListener) {
-      media.addEventListener('change', handleChange);
-      return () => media.removeEventListener('change', handleChange);
-    }
-
-    media.addListener(handleChange);
-    return () => media.removeListener(handleChange);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (collapseTimeoutRef.current) {
-        clearTimeout(collapseTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isMobileOrTablet || !isMobileMenuOpen) return undefined;
-
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-        setIsThemeSubmenuOpen(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isMobileMenuOpen, isMobileOrTablet]);
-
-  const showLabels = isMobileOrTablet ? isMobileMenuOpen : isDesktopExpanded;
-
-  const closeTouchMenu = () => {
-    if (!isMobileOrTablet) return;
-    setIsMobileMenuOpen(false);
-    setIsThemeSubmenuOpen(false);
-  };
-
   const handleHomeClick = () => {
     onHome?.();
-    closeTouchMenu();
   };
 
   const handleSectionNav = (sectionId) => {
     scrollToSection(sectionId);
-    closeTouchMenu();
   };
-
-  const onDesktopMouseEnter = () => {
-    if (isMobileOrTablet) return;
-    if (collapseTimeoutRef.current) {
-      clearTimeout(collapseTimeoutRef.current);
-      collapseTimeoutRef.current = null;
-    }
-    setIsDesktopExpanded(true);
-  };
-
-  const onDesktopMouseLeave = () => {
-    if (isMobileOrTablet) return;
-    if (collapseTimeoutRef.current) {
-      clearTimeout(collapseTimeoutRef.current);
-    }
-    collapseTimeoutRef.current = window.setTimeout(() => {
-      setIsDesktopExpanded(false);
-      setIsThemeSubmenuOpen(false);
-      collapseTimeoutRef.current = null;
-    }, 180);
-  };
-
-  const menuShellClass = isMobileOrTablet
-    ? `fixed top-0 left-0 z-50 h-screen w-44 transition-transform duration-300 ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-      }`
-    : `fixed top-3 left-3 z-40 h-[calc(100vh-1.5rem)] transition-[width] duration-300 ${
-        isDesktopExpanded ? 'w-[24rem]' : 'w-16'
-      }`;
 
   return (
-    <>
-      {isMobileOrTablet && (
+    <aside className="surface-panel w-full rounded-2xl p-3 text-white lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:w-64">
+      <nav className="flex h-full flex-col gap-2">
         <button
           type="button"
-          onClick={() => setIsMobileMenuOpen(true)}
-          className="fixed top-3 left-3 z-[60] inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-black/60 text-white backdrop-blur-md"
-          aria-label="Open navigation menu"
+          onClick={handleHomeClick}
+          className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-white/5"
         >
-          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7h16M4 12h16M4 17h16" />
+          <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="m3 11 9-7 9 7M5 10v10h14V10" />
           </svg>
+          <span className="text-sm">Home</span>
         </button>
-      )}
 
-      {isMobileOrTablet && isMobileMenuOpen && (
         <button
           type="button"
-          onClick={closeTouchMenu}
-          aria-label="Close navigation menu"
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px]"
-        />
-      )}
+          onClick={() => handleSectionNav('playing-now')}
+          className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-white/5"
+        >
+          <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="m8 6 10 6-10 6V6Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5v14" />
+          </svg>
+          <span className="text-sm">Playing</span>
+        </button>
 
-      <div className={menuShellClass} onMouseEnter={onDesktopMouseEnter} onMouseLeave={onDesktopMouseLeave}>
-        <aside className="absolute left-0 top-0 h-full w-56 rounded-2xl border border-white/10 bg-black/65 px-2 py-3 text-white backdrop-blur-xl">
-          <nav className="relative h-full">
-            <ul className="space-y-1">
-              <li
-                className="relative"
-                onMouseEnter={() => {
-                  if (!isMobileOrTablet) setIsThemeSubmenuOpen(true);
-                }}
-                onMouseLeave={() => {
-                  if (!isMobileOrTablet) setIsThemeSubmenuOpen(false);
-                }}
+        <button
+          type="button"
+          onClick={() => handleSectionNav('playlist-strip')}
+          className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-white/5"
+        >
+          <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7h16M4 12h10M4 17h13" />
+          </svg>
+          <span className="text-sm">Playlists</span>
+        </button>
+
+        <div className="mt-2 border-t border-white/10 pt-2">
+          <div className="px-3 text-xs font-semibold uppercase tracking-wide text-white/70">Theme</div>
+          <div className="mt-2 space-y-1">
+            {THEME_OPTIONS.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => onThemeChange(option.id)}
+                className={`flex h-10 w-full items-center justify-between rounded-xl px-3 text-left text-sm transition-colors ${
+                  theme === option.id
+                    ? 'accent-bg accent-border border'
+                    : 'border border-white/10 hover:bg-white/5'
+                }`}
               >
-                <button
-                  type="button"
-                  onClick={() => setIsThemeSubmenuOpen((prev) => !prev)}
-                  className="group flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-slate-800/55"
-                  aria-haspopup="menu"
-                  aria-expanded={isThemeSubmenuOpen}
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v2.5m0 13V21m6.36-13.36-1.77 1.77m-9.18 9.18-1.77 1.77M21 12h-2.5m-13 0H3m15.36 6.36-1.77-1.77m-9.18-9.18L5.64 5.64M12 7.25A4.75 4.75 0 1 0 16.75 12 4.75 4.75 0 0 0 12 7.25Z" />
+                <span>{option.label}</span>
+                {theme === option.id && (
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.4} d="m5 12 4 4 10-10" />
                   </svg>
-                  <span
-                    className={`overflow-hidden whitespace-nowrap text-sm transition-all ${
-                      showLabels ? 'max-w-[140px] opacity-100' : 'max-w-0 opacity-0'
-                    }`}
-                  >
-                    Themes
-                  </span>
-                </button>
-
-                {isThemeSubmenuOpen && (
-                  <div className="absolute left-[calc(100%+0.5rem)] top-0 w-36 rounded-xl border border-sky-700/35 bg-slate-950/95 p-2 shadow-2xl backdrop-blur-xl">
-                    {THEME_OPTIONS.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => {
-                          onThemeChange(option.id);
-                          if (isMobileOrTablet) {
-                            setIsThemeSubmenuOpen(false);
-                          }
-                        }}
-                        className={`mb-1 flex h-10 w-full items-center justify-between rounded-lg px-2.5 text-sm last:mb-0 ${
-                          theme === option.id ? 'bg-cyan-600/35 text-white' : 'text-gray-200 hover:bg-slate-800/55'
-                        }`}
-                      >
-                        <span>{option.label}</span>
-                        {theme === option.id && (
-                          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.4} d="m5 12 4 4 10-10" />
-                          </svg>
-                        )}
-                      </button>
-                    ))}
-                  </div>
                 )}
-              </li>
+              </button>
+            ))}
+          </div>
+        </div>
 
-              <li>
-                <button
-                  type="button"
-                  onClick={handleHomeClick}
-                  className="group flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-slate-800/55"
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="m3 11 9-7 9 7M5 10v10h14V10" />
-                  </svg>
-                  <span
-                    className={`overflow-hidden whitespace-nowrap text-sm transition-all ${
-                      showLabels ? 'max-w-[140px] opacity-100' : 'max-w-0 opacity-0'
-                    }`}
-                  >
-                    Home
-                  </span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleSectionNav('playing-now')}
-                  className="group flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-slate-800/55"
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="m8 6 10 6-10 6V6Z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5v14" />
-                  </svg>
-                  <span
-                    className={`overflow-hidden whitespace-nowrap text-sm transition-all ${
-                      showLabels ? 'max-w-[140px] opacity-100' : 'max-w-0 opacity-0'
-                    }`}
-                  >
-                    Playing
-                  </span>
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleSectionNav('playlist-strip')}
-                  className="group flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-slate-800/55"
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7h16M4 12h10M4 17h13" />
-                  </svg>
-                  <span
-                    className={`overflow-hidden whitespace-nowrap text-sm transition-all ${
-                      showLabels ? 'max-w-[140px] opacity-100' : 'max-w-0 opacity-0'
-                    }`}
-                  >
-                    Playlists
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-      </div>
-    </>
+        <div className="mt-auto px-3 pt-2 text-xs text-white/55">
+          Tip: Use Home to reset search.
+        </div>
+      </nav>
+    </aside>
   );
 }
 
