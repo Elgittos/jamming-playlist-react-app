@@ -1,13 +1,24 @@
 import SongCard from './SongCard';
 import { usePlayer } from '../hooks/usePlayer';
 
-function RecentlyPlayed() {
+function RecentlyPlayed({ theme = 'original' }) {
   const { isAuthed, recentlyPlayed, isRecentlyPlayedSeeded } = usePlayer();
   const loading = !isRecentlyPlayedSeeded;
 
+  const isLight = theme === 'light';
+  const containerClasses =
+    theme === 'dark'
+      ? 'bg-gradient-to-br from-zinc-950/85 via-zinc-950 to-black border border-white/10'
+      : theme === 'light'
+        ? 'bg-white/75 border border-zinc-200'
+        : 'bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black border border-fuchsia-800/30';
+
+  const primaryText = isLight ? 'text-zinc-900' : 'text-white';
+  const secondaryText = isLight ? 'text-zinc-600' : 'text-fuchsia-300';
+
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-fuchsia-800/30">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Recently Played</h2>
+    <div className={`w-full ${containerClasses} rounded-2xl shadow-2xl p-3 sm:p-4 lg:p-5 backdrop-blur`}>
+      <h2 className={`text-lg sm:text-xl lg:text-2xl font-bold ${primaryText} mb-2.5 sm:mb-3`}>Recently Played</h2>
       
       {/* Loading state */}
       {loading && (
@@ -18,7 +29,7 @@ function RecentlyPlayed() {
 
       {!loading && !isAuthed && (
         <div className="text-center py-10">
-          <p className="text-fuchsia-300 text-base sm:text-lg">Please login to see your recently played tracks</p>
+          <p className={`${secondaryText} text-base sm:text-lg`}>Please login to see your recently played tracks</p>
         </div>
       )}
 
@@ -37,7 +48,7 @@ function RecentlyPlayed() {
       {/* No tracks state */}
       {!loading && isAuthed && recentlyPlayed.length === 0 && (
         <div className="text-center py-10">
-          <p className="text-fuchsia-300 text-base sm:text-lg">No recently played tracks found</p>
+          <p className={`${secondaryText} text-base sm:text-lg`}>No recently played tracks found</p>
         </div>
       )}
     </div>

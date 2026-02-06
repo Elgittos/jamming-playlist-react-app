@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import RecentlyPlayed from './components/RecentlyPlayed'
 import YourPlaylist from './components/YourPlaylist'
@@ -7,31 +7,79 @@ import SearchBar from './components/SearchBar'
 import GenreSection from './components/GenreSection'
 import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
+import SideNav from './components/SideNav'
+
+const THEME_STORAGE_KEY = 'jp_theme_v1';
 
 function App() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY) || 'original';
+    } catch {
+      return 'original';
+    }
+  });
+  const [homeResetSignal, setHomeResetSignal] = useState(0);
 
   const handlePlaylistSelect = (playlistId) => {
     setSelectedPlaylistId(playlistId);
   };
 
+  const isLight = theme === 'light';
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
+  const appBgClasses = useMemo(() => {
+    if (theme === 'dark') return 'bg-gradient-to-br from-zinc-950 via-black to-black';
+    if (theme === 'light') return 'bg-gradient-to-br from-zinc-100 via-white to-zinc-200';
+    return 'bg-gradient-to-br from-purple-950 via-violet-950 to-black';
+  }, [theme]);
+
+  const headerClasses = useMemo(() => {
+    if (theme === 'dark') {
+      return 'bg-gradient-to-r from-zinc-950 via-zinc-900 to-black border border-white/10';
+    }
+    if (theme === 'light') {
+      return 'bg-white/75 border border-zinc-200';
+    }
+    return 'bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 border border-indigo-800/30';
+  }, [theme]);
+
+  const handleHome = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    setHomeResetSignal((v) => v + 1);
+  };
+
   return (
 
-    <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
+    <main className={`min-h-screen ${appBgClasses} ${isLight ? 'text-zinc-900' : 'text-white'}`}>
+      <SideNav
+        theme={theme}
+        onThemeChange={setTheme}
+        onHome={handleHome}
+      />
+
+      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-3 sm:gap-4 p-3 sm:p-4 md:p-5 lg:p-6">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl">
+        <div className={`${headerClasses} p-3 sm:p-4 lg:p-5 rounded-2xl shadow-2xl backdrop-blur`}> 
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-6">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+            <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight ${isLight ? 'text-zinc-900' : 'text-white'}`}>
               🎵 Jamming Playlist App
             </h1>
 
             {/* Search Bar */}
             <div className="w-full lg:flex-1 lg:max-w-2xl">
-              <SearchBar />
+              <SearchBar theme={theme} resetSignal={homeResetSignal} />
             </div>
 
             <Link
@@ -43,18 +91,24 @@ function App() {
           </div>
         </div>
 
-        <RecentlyPlayed />
-
-        {/* Playlists Menu */}
+        {/* Playlists Strip (top context) */}
         <PlaylistsMenu
           onPlaylistSelect={handlePlaylistSelect}
           selectedPlaylistId={selectedPlaylistId}
+          theme={theme}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full lg:min-h-[600px]">
-          <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
-          <PlayingNow />
+        {/* Playback + playlist content (Playing Now prioritized) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 w-full lg:min-h-[520px]">
+          <div className="lg:col-span-2">
+            <PlayingNow theme={theme} />
+          </div>
+          <div className="lg:col-span-1">
+            <YourPlaylist selectedPlaylistId={selectedPlaylistId} theme={theme} />
+          </div>
         </div>
+
+        <RecentlyPlayed theme={theme} />
 
         {/* Genre Sections */}
         <GenreSection genre="Pop" gradientFrom="from-pink-900" gradientVia="via-rose-900" gradientTo="to-pink-950" />

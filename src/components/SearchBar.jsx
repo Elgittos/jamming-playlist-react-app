@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { searchSpotify, isAuthenticated } from '../api';
 import { usePlayer } from '../hooks/usePlayer';
 
-function SearchBar() {
+function SearchBar({ resetSignal = 0, theme = 'original' }) {
   const [query, setQuery] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
@@ -19,6 +19,8 @@ function SearchBar() {
     const trimmed = query.trim();
     return isFocused && trimmed.length < 2 && searchHistory.length > 0;
   }, [isFocused, query, searchHistory.length]);
+
+  const isLight = theme === 'light';
 
   // Fetch suggestions when query changes
   useEffect(() => {
@@ -75,6 +77,17 @@ function SearchBar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // External reset hook (Home)
+  useEffect(() => {
+    setQuery('');
+    setSuggestions(null);
+    setIsLoading(false);
+    setShowDropdown(false);
+    setIsFocused(false);
+    setIsExpanded(false);
+    inputRef.current?.blur?.();
+  }, [resetSignal]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -141,9 +154,11 @@ function SearchBar() {
               }
             }}
             placeholder="Search for songs, artists, or albums..."
-            className={`w-full py-3 px-6 pr-12 rounded-full bg-purple-900/50 border-2 border-purple-700/50 text-white placeholder-purple-300/60 focus:outline-none focus:border-fuchsia-500 focus:bg-purple-900/70 transition-all duration-300 ${
-              isExpanded ? 'shadow-lg shadow-fuchsia-500/20' : ''
-            }`}
+            className={`w-full py-3 px-6 pr-12 rounded-full border-2 focus:outline-none focus:border-fuchsia-500 transition-all duration-300 ${
+              isLight
+                ? 'bg-white/80 border-zinc-200 text-zinc-900 placeholder-zinc-500 focus:bg-white'
+                : 'bg-purple-900/50 border-purple-700/50 text-white placeholder-purple-300/60 focus:bg-purple-900/70'
+            } ${isExpanded ? 'shadow-lg shadow-fuchsia-500/20' : ''}`}
           />
           
           {/* Search icon/button */}
@@ -203,22 +218,24 @@ function SearchBar() {
 
       {/* Dropdown Suggestions */}
       {showDropdown && (suggestions || shouldShowHistory) && (
-        <div className="absolute top-full mt-2 w-full bg-purple-900 border-2 border-fuchsia-600/50 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto">
+        <div className={`absolute top-full mt-2 w-full border-2 border-fuchsia-600/50 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto ${
+          isLight ? 'bg-white' : 'bg-purple-900'
+        }`}>
           {/* Search History (subtle, only when input is empty/short) */}
           {shouldShowHistory && !suggestions && (
             <div className="p-3">
-              <h3 className="text-[11px] font-bold text-purple-300 uppercase mb-2 px-2">Recent searches</h3>
+              <h3 className={`text-[11px] font-bold uppercase mb-2 px-2 ${isLight ? 'text-zinc-500' : 'text-purple-300'}`}>Recent searches</h3>
               <div className="space-y-1">
                 {searchHistory.slice(0, 4).map((historyItem) => (
                   <button
                     key={historyItem}
                     onClick={() => handleHistoryClick(historyItem)}
-                    className="w-full flex items-center gap-2.5 p-2 hover:bg-fuchsia-800/20 rounded-lg transition-all duration-200 text-left"
+                    className={`w-full flex items-center gap-2.5 p-2 rounded-lg transition-all duration-200 text-left ${isLight ? 'hover:bg-zinc-100' : 'hover:bg-fuchsia-800/20'}`}
                   >
-                    <svg className="w-4 h-4 text-purple-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-4 h-4 flex-shrink-0 ${isLight ? 'text-zinc-500' : 'text-purple-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-5.2-5.2m2.2-5.3a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <span className="text-sm text-white/90 truncate">{historyItem}</span>
+                    <span className={`text-sm truncate ${isLight ? 'text-zinc-800' : 'text-white/90'}`}>{historyItem}</span>
                   </button>
                 ))}
               </div>
@@ -233,7 +250,7 @@ function SearchBar() {
                 <button
                   key={track.id}
                   onClick={() => handleSuggestionClick(track, 'track')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-fuchsia-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group ${isLight ? 'hover:bg-zinc-100' : 'hover:bg-fuchsia-800/30'}`}
                 >
                   <img
                     src={track.album.images[2]?.url || track.album.images[0]?.url}
@@ -241,14 +258,14 @@ function SearchBar() {
                     className="w-12 h-12 rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-fuchsia-300">
+                    <p className={`${isLight ? 'text-zinc-900' : 'text-white'} font-medium truncate group-hover:text-fuchsia-300`}>
                       {track.name}
                     </p>
-                    <p className="text-gray-400 text-sm truncate">
+                    <p className={`${isLight ? 'text-zinc-600' : 'text-gray-400'} text-sm truncate`}>
                       {track.artists.map(a => a.name).join(', ')}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-purple-800/50 px-2 py-1 rounded">Track</span>
+                  <span className={`text-xs ${isLight ? 'text-zinc-600 bg-zinc-100' : 'text-gray-500 bg-purple-800/50'} px-2 py-1 rounded`}>Track</span>
                 </button>
               ))}
             </div>
@@ -262,7 +279,7 @@ function SearchBar() {
                 <button
                   key={artist.id}
                   onClick={() => handleSuggestionClick(artist, 'artist')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-fuchsia-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group ${isLight ? 'hover:bg-zinc-100' : 'hover:bg-fuchsia-800/30'}`}
                 >
                   <img
                     src={artist.images[2]?.url || artist.images[0]?.url || 'https://via.placeholder.com/48/5B21B6/FFFFFF?text=Artist'}
@@ -270,14 +287,14 @@ function SearchBar() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-fuchsia-300">
+                    <p className={`${isLight ? 'text-zinc-900' : 'text-white'} font-medium truncate group-hover:text-fuchsia-300`}>
                       {artist.name}
                     </p>
-                    <p className="text-gray-400 text-sm capitalize">
+                    <p className={`${isLight ? 'text-zinc-600' : 'text-gray-400'} text-sm capitalize`}>
                       {artist.genres[0] || 'Artist'}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-purple-800/50 px-2 py-1 rounded">Artist</span>
+                  <span className={`text-xs ${isLight ? 'text-zinc-600 bg-zinc-100' : 'text-gray-500 bg-purple-800/50'} px-2 py-1 rounded`}>Artist</span>
                 </button>
               ))}
             </div>
@@ -291,7 +308,7 @@ function SearchBar() {
                 <button
                   key={album.id}
                   onClick={() => handleSuggestionClick(album, 'album')}
-                  className="w-full flex items-center gap-3 p-2 hover:bg-fuchsia-800/30 rounded-lg transition-all duration-200 text-left group"
+                  className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all duration-200 text-left group ${isLight ? 'hover:bg-zinc-100' : 'hover:bg-fuchsia-800/30'}`}
                 >
                   <img
                     src={album.images[2]?.url || album.images[0]?.url}
@@ -299,14 +316,14 @@ function SearchBar() {
                     className="w-12 h-12 rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-fuchsia-300">
+                    <p className={`${isLight ? 'text-zinc-900' : 'text-white'} font-medium truncate group-hover:text-fuchsia-300`}>
                       {album.name}
                     </p>
-                    <p className="text-gray-400 text-sm truncate">
+                    <p className={`${isLight ? 'text-zinc-600' : 'text-gray-400'} text-sm truncate`}>
                       {album.artists.map(a => a.name).join(', ')}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500 bg-purple-800/50 px-2 py-1 rounded">Album</span>
+                  <span className={`text-xs ${isLight ? 'text-zinc-600 bg-zinc-100' : 'text-gray-500 bg-purple-800/50'} px-2 py-1 rounded`}>Album</span>
                 </button>
               ))}
             </div>

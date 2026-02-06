@@ -223,7 +223,7 @@ export async function getAccessToken() {
   // Token expired, try to refresh
   try {
     return await refreshAccessToken();
-  } catch (error) {
+  } catch {
     console.error('Token refresh failed, need to re-authenticate');
     throw new Error('Please login to Spotify');
   }

@@ -1,10 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { getUserPlaylists } from '../api';
 
-export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) {
+export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId, theme = 'original' }) {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const isLight = theme === 'light';
+
+  const containerClasses = useMemo(() => {
+    if (theme === 'dark') {
+      return 'bg-gradient-to-br from-zinc-950/80 via-zinc-950 to-black border border-white/10';
+    }
+    if (theme === 'light') {
+      return 'bg-white/75 border border-zinc-200';
+    }
+    return 'bg-gradient-to-br from-indigo-900 via-purple-950 to-black border border-indigo-800/30';
+  }, [theme]);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -26,10 +38,13 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (loading) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400"></div>
+      <div className={`w-full ${containerClasses} rounded-2xl shadow-2xl p-2.5 sm:p-3 backdrop-blur`}>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className={`text-sm sm:text-base font-bold ${isLight ? 'text-zinc-900' : 'text-white'} shrink-0`}>Playlists</h2>
+          <div className="flex items-center gap-2">
+            <div className={`animate-spin rounded-full h-5 w-5 border-b-2 ${isLight ? 'border-zinc-600' : 'border-indigo-300'}`}></div>
+            <span className={`text-xs ${isLight ? 'text-zinc-600' : 'text-indigo-200'}`}>Loading…</span>
+          </div>
         </div>
       </div>
     );
@@ -37,58 +52,45 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
 
   if (error) {
     return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <p className="text-indigo-300 text-center py-12">{error}</p>
+      <div className={`w-full ${containerClasses} rounded-2xl shadow-2xl p-2.5 sm:p-3 backdrop-blur`}>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className={`text-sm sm:text-base font-bold ${isLight ? 'text-zinc-900' : 'text-white'} shrink-0`}>Playlists</h2>
+          <p className={`text-xs ${isLight ? 'text-zinc-600' : 'text-indigo-200'}`}>{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-      
-      <div className="relative">
-        {/* Scrollable container */}
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-950">
-          {playlists.map((playlist) => (
-            <div
-              key={playlist.id}
-              onClick={() => onPlaylistSelect(playlist.id)}
-              className={`flex-shrink-0 w-[150px] sm:w-[170px] lg:w-[190px] h-[210px] sm:h-[230px] lg:h-[250px] bg-gradient-to-br from-indigo-800/50 to-purple-900/50 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl border-2 ${
-                selectedPlaylistId === playlist.id 
-                  ? 'border-indigo-400 shadow-lg shadow-indigo-500/50' 
-                  : 'border-indigo-800/30'
-              }`}
-            >
-              {/* Playlist Image */}
-              <div className="h-[120px] sm:h-[135px] lg:h-[160px] w-full overflow-hidden">
-                {playlist.images && playlist.images[0] ? (
-                  <img
-                    src={playlist.images[0].url}
-                    alt={playlist.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white/50" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
+    <div className={`w-full ${containerClasses} rounded-2xl shadow-2xl p-2.5 sm:p-3 backdrop-blur`}>
+      <div className="flex items-center gap-3">
+        <h2 className={`text-sm sm:text-base font-bold ${isLight ? 'text-zinc-900' : 'text-white'} shrink-0`}>Playlists</h2>
 
-              {/* Playlist Info */}
-              <div className="p-3">
-                <h3 className="text-white font-semibold text-xs sm:text-sm line-clamp-2 mb-1">
-                  {playlist.name}
-                </h3>
-                <p className="text-indigo-300 text-[11px] sm:text-xs">
-                  {playlist.tracks.total} tracks
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className="flex-1 min-w-0">
+          <div className="flex gap-2 overflow-x-auto py-1 pr-1 scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-950">
+            {playlists.map((playlist) => {
+              const selected = selectedPlaylistId === playlist.id;
+              return (
+                <button
+                  key={playlist.id}
+                  type="button"
+                  onClick={() => onPlaylistSelect(playlist.id)}
+                  className={
+                    `flex-shrink-0 px-3 py-2 rounded-full text-sm font-semibold transition-colors border ` +
+                    (selected
+                      ? (isLight
+                          ? 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200'
+                          : 'bg-indigo-500/20 text-white border-indigo-300/40')
+                      : (isLight
+                          ? 'bg-white/70 text-zinc-800 border-zinc-200 hover:bg-zinc-100'
+                          : 'bg-white/5 text-white/90 border-white/10 hover:bg-white/10'))
+                  }
+                >
+                  <span className="truncate max-w-[14rem] inline-block align-middle">{playlist.name}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -2,11 +2,24 @@ import { useState, useEffect } from 'react';
 import { getPlaylistTracks } from '../api';
 import { usePlayer } from '../hooks/usePlayer';
 
-function YourPlaylist({ selectedPlaylistId }) {
+function YourPlaylist({ selectedPlaylistId, theme = 'original' }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { playTrack } = usePlayer();
+
+  const isLight = theme === 'light';
+
+  const containerClasses =
+    theme === 'dark'
+      ? 'bg-gradient-to-br from-zinc-950/85 via-zinc-950 to-black border border-white/10'
+      : theme === 'light'
+        ? 'bg-white/75 border border-zinc-200'
+        : 'bg-gradient-to-br from-emerald-900 via-green-950 to-black border border-emerald-800/30';
+
+  const primaryText = isLight ? 'text-zinc-900' : 'text-white';
+  const secondaryText = isLight ? 'text-zinc-600' : 'text-gray-400';
+  const tertiaryText = isLight ? 'text-zinc-500' : 'text-gray-400';
 
   useEffect(() => {
     async function fetchPlaylistTracks() {
@@ -56,8 +69,8 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-emerald-800/30 flex flex-col">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Playlist Tracks</h2>
+    <div className={`w-full ${containerClasses} rounded-2xl shadow-2xl p-3 sm:p-4 lg:p-5 h-full flex flex-col backdrop-blur`}>
+      <h2 className={`text-lg sm:text-xl lg:text-2xl font-bold ${primaryText} mb-2.5 sm:mb-3`}>Playlist Tracks</h2>
       
       {/* Loading state */}
       {loading && (
@@ -76,7 +89,7 @@ function YourPlaylist({ selectedPlaylistId }) {
       {/* No playlist selected */}
       {!selectedPlaylistId && !loading && (
         <div className="flex justify-center items-center py-12 flex-1">
-          <p className="text-gray-400 text-lg text-center">
+          <p className={`${tertiaryText} text-base sm:text-lg text-center`}>
             Select a playlist to view its tracks
           </p>
         </div>
@@ -89,7 +102,11 @@ function YourPlaylist({ selectedPlaylistId }) {
             <div
               key={track.id + index}
               onClick={() => handleTrackClick(track.uri)}
-              className="bg-emerald-950/50 hover:bg-emerald-900/50 rounded-lg p-2.5 border border-emerald-800/30 transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-2.5"
+              className={`rounded-lg p-2.5 border transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-2.5 ${
+                isLight
+                  ? 'bg-zinc-50 hover:bg-zinc-100 border-zinc-200'
+                  : 'bg-emerald-950/50 hover:bg-emerald-900/50 border-emerald-800/30'
+              }`}
             >
               {/* Track Number */}
               <div className="w-8 text-center text-gray-400 group-hover:text-emerald-300 text-sm">
@@ -111,23 +128,23 @@ function YourPlaylist({ selectedPlaylistId }) {
               
               {/* Track Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base truncate group-hover:text-emerald-300 transition-colors">
+                <h3 className={`${isLight ? 'text-zinc-900' : 'text-white'} font-semibold text-base truncate group-hover:text-emerald-300 transition-colors`}>
                   {track.name}
                 </h3>
-                <p className="text-gray-400 text-sm truncate">
+                <p className={`${secondaryText} text-sm truncate`}>
                   {track.artists}
                 </p>
               </div>
 
               {/* Album Name */}
               <div className="hidden md:block flex-1 min-w-0">
-                <p className="text-gray-400 text-sm truncate">
+                <p className={`${secondaryText} text-sm truncate`}>
                   {track.album}
                 </p>
               </div>
 
               {/* Duration */}
-              <div className="text-gray-400 text-sm">
+              <div className={`${secondaryText} text-sm`}>
                 {formatDuration(track.duration)}
               </div>
 
@@ -146,7 +163,7 @@ function YourPlaylist({ selectedPlaylistId }) {
       {!loading && !error && selectedPlaylistId && tracks.length === 0 && (
         <div className="text-center py-12">
           <p className="text-emerald-300 text-lg">This playlist is empty</p>
-          <p className="text-gray-400 text-sm mt-2">Add some tracks in Spotify!</p>
+          <p className={`${secondaryText} text-sm mt-2`}>Add some tracks in Spotify!</p>
         </div>
       )}
     </div>
