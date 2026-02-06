@@ -7,6 +7,7 @@ import SearchBar from './components/SearchBar'
 import GenreSection from './components/GenreSection'
 import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
+import LeftSidebarMenu from './components/LeftSidebarMenu'
 
 function App() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
@@ -16,9 +17,13 @@ function App() {
   };
 
   return (
+    <>
+      {/* Left Sidebar Menu */}
+      <LeftSidebarMenu />
 
-    <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
+      {/* Main Content Area */}
+      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black md:ml-20 transition-all duration-300">
+        <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
 
@@ -62,8 +67,9 @@ function App() {
         <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" />
         <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" />
         <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" />
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   )
 }
 
