@@ -89,13 +89,16 @@ function LeftSideMenu() {
             className={`p-1.5 rounded-lg transition-all duration-200 hover:bg-fuchsia-800/30 ${
               isPinned ? 'bg-fuchsia-800/40 text-fuchsia-400' : 'text-gray-400 hover:text-fuchsia-400'
             } ${!isExpanded ? 'ml-auto' : ''}`}
+            aria-label={isPinned ? 'Unpin menu' : 'Pin menu'}
             title={isPinned ? 'Unpin menu' : 'Pin menu'}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               {isPinned ? (
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                // Pinned icon (pin at angle)
+                <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
               ) : (
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                // Unpinned icon (upright pin)
+                <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
               )}
             </svg>
           </button>
@@ -107,6 +110,8 @@ function LeftSideMenu() {
             <button
               key={item.id}
               className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-300 hover:text-white hover:bg-fuchsia-800/30 transition-all duration-200 group"
+              aria-label={item.label}
+              onClick={() => console.log(`Navigate to ${item.label}`)}
             >
               <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
                 {item.icon}
@@ -124,7 +129,11 @@ function LeftSideMenu() {
 
         {/* Bottom section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-fuchsia-800/30">
-          <button className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-300 hover:text-white hover:bg-fuchsia-800/30 transition-all duration-200">
+          <button 
+            className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-300 hover:text-white hover:bg-fuchsia-800/30 transition-all duration-200"
+            aria-label="Settings"
+            onClick={() => console.log('Navigate to Settings')}
+          >
             <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />

@@ -21,8 +21,8 @@ function App() {
       {/* Left Side Menu */}
       <LeftSideMenu />
 
-      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
-        <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8 ml-16">
+      <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black pl-16">
+        <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
           {/* Spotify Web Player */}
           <SpotifyPlayer />
 
