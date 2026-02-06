@@ -8,9 +8,9 @@ function RecentlyPlayed({ theme = 'original' }) {
   const isLight = theme === 'light';
   const containerClasses =
     theme === 'dark'
-      ? 'bg-gradient-to-br from-zinc-950/85 via-zinc-950 to-black border border-white/10'
+      ? 'bg-gradient-to-br from-zinc-950/95 via-zinc-950/90 to-black/95 border border-white/20 backdrop-blur-xl shadow-2xl shadow-black/40'
       : theme === 'light'
-        ? 'bg-white/75 border border-zinc-200'
+        ? 'bg-white/90 border border-zinc-300/60 backdrop-blur-xl shadow-2xl shadow-zinc-300/20'
         : 'bg-gradient-to-br from-fuchsia-900 via-pink-950 to-black border border-fuchsia-800/30';
 
   const primaryText = isLight ? 'text-zinc-900' : 'text-white';

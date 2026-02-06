@@ -10,10 +10,10 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId, th
 
   const containerClasses = useMemo(() => {
     if (theme === 'dark') {
-      return 'bg-gradient-to-br from-zinc-950/80 via-zinc-950 to-black border border-white/10';
+      return 'bg-gradient-to-br from-zinc-950/95 via-zinc-950/90 to-black/95 border border-white/20 backdrop-blur-xl shadow-2xl shadow-black/40';
     }
     if (theme === 'light') {
-      return 'bg-white/75 border border-zinc-200';
+      return 'bg-white/90 border border-zinc-300/60 backdrop-blur-xl shadow-2xl shadow-zinc-300/20';
     }
     return 'bg-gradient-to-br from-indigo-900 via-purple-950 to-black border border-indigo-800/30';
   }, [theme]);

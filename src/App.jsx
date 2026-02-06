@@ -44,10 +44,10 @@ function App() {
 
   const headerClasses = useMemo(() => {
     if (theme === 'dark') {
-      return 'bg-gradient-to-r from-zinc-950 via-zinc-900 to-black border border-white/10';
+      return 'bg-gradient-to-r from-zinc-950/95 via-zinc-900/90 to-black/95 border border-white/20 backdrop-blur-xl shadow-2xl shadow-black/40';
     }
     if (theme === 'light') {
-      return 'bg-white/75 border border-zinc-200';
+      return 'bg-white/90 border border-zinc-300/60 backdrop-blur-xl shadow-2xl shadow-zinc-300/20';
     }
     return 'bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 border border-indigo-800/30';
   }, [theme]);
@@ -71,7 +71,7 @@ function App() {
         <SpotifyPlayer />
 
         {/* Header */}
-        <div className={`${headerClasses} p-3 sm:p-4 lg:p-5 rounded-2xl shadow-2xl backdrop-blur`}> 
+        <div className={`${headerClasses} p-3 sm:p-4 lg:p-5 rounded-2xl`}> 
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-6">
             <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight ${isLight ? 'text-zinc-900' : 'text-white'}`}>
               🎵 Jamming Playlist App

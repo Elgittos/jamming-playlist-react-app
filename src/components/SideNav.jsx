@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 const THEME_STORAGE_KEY = 'jp_theme_v1';
+const PIN_STORAGE_KEY = 'jp_nav_pinned_v1';
 
 function useIsHoverCapable() {
   const [isHoverCapable, setIsHoverCapable] = useState(true);
@@ -25,9 +26,13 @@ function useIsHoverCapable() {
   return isHoverCapable;
 }
 
-function Icon({ children }) {
+function Icon({ children, isLight }) {
   return (
-    <span className="grid place-items-center w-10 h-10 rounded-xl bg-white/5 border border-white/10">
+    <span className={`grid place-items-center w-10 h-10 rounded-xl transition-all ${
+      isLight 
+        ? 'bg-zinc-100/80 border border-zinc-300/50 backdrop-blur-sm shadow-sm' 
+        : 'bg-white/10 border border-white/20 backdrop-blur-sm shadow-lg shadow-white/5'
+    }`}>
       {children}
     </span>
   );
@@ -41,8 +46,23 @@ export default function SideNav({
   const isHoverCapable = useIsHoverCapable();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isThemesOpenMobile, setIsThemesOpenMobile] = useState(false);
+  const [isPinned, setIsPinned] = useState(() => {
+    try {
+      return localStorage.getItem(PIN_STORAGE_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   const isLight = theme === 'light';
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PIN_STORAGE_KEY, isPinned.toString());
+    } catch {
+      // ignore
+    }
+  }, [isPinned]);
 
   const closeMobile = () => {
     setIsMobileOpen(false);
@@ -81,11 +101,19 @@ export default function SideNav({
   );
 
   const panelClasses = isLight
-    ? 'bg-white/85 text-zinc-900 border border-zinc-200'
-    : 'bg-gradient-to-b from-zinc-950/90 via-black/85 to-black/80 text-white border border-white/10';
+    ? 'bg-white/90 text-zinc-900 border border-zinc-300/60 backdrop-blur-xl shadow-2xl shadow-zinc-300/20'
+    : 'bg-gradient-to-b from-zinc-950/95 via-black/90 to-black/85 text-white border border-white/20 backdrop-blur-xl shadow-2xl shadow-black/40';
 
-  const itemBase = 'w-full flex items-center gap-3 rounded-xl px-2 py-1.5 md:px-1 md:py-1.5 transition-colors';
-  const itemHover = isLight ? 'hover:bg-zinc-100' : 'hover:bg-white/10';
+  const itemBase = 'w-full flex items-center gap-3 rounded-xl px-2 py-1.5 md:px-1 md:py-1.5 transition-all duration-200';
+  const itemHover = isLight 
+    ? 'hover:bg-zinc-200/60 hover:shadow-md' 
+    : 'hover:bg-white/15 hover:shadow-lg hover:shadow-white/5';
+
+  const togglePin = () => {
+    setIsPinned((v) => !v);
+  };
+
+  const isExpanded = isPinned || isMobileOpen;
 
   return (
     <>
@@ -93,7 +121,11 @@ export default function SideNav({
       <button
         type="button"
         onClick={() => setIsMobileOpen(true)}
-        className={`fixed top-4 left-4 z-[60] md:hidden inline-flex items-center justify-center w-11 h-11 rounded-2xl shadow-2xl ${isLight ? 'bg-white/90 text-zinc-900 border border-zinc-200' : 'bg-black/40 text-white border border-white/10'} backdrop-blur`}
+        className={`fixed top-4 left-4 z-[60] md:hidden inline-flex items-center justify-center w-11 h-11 rounded-2xl shadow-2xl ${
+          isLight 
+            ? 'bg-white/95 text-zinc-900 border border-zinc-300/60 backdrop-blur-xl shadow-zinc-300/30' 
+            : 'bg-black/60 text-white border border-white/20 backdrop-blur-xl shadow-black/50'
+        }`}
         aria-label="Open menu"
       >
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -114,11 +146,12 @@ export default function SideNav({
       {/* Nav rail */}
       <nav
         className={
-          `fixed inset-y-0 left-0 z-[55] ${panelClasses} backdrop-blur md:group/nav ` +
+          `fixed inset-y-0 left-0 z-[55] ${panelClasses} md:group/nav ` +
           `transition-transform duration-200 md:translate-x-0 ` +
           `${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} ` +
-          // width behavior
-          `w-72 md:w-14 md:hover:w-56 md:overflow-visible overflow-hidden`
+          // width behavior - fixed when pinned or on hover
+          `w-72 md:w-14 ${isPinned ? 'md:!w-56' : 'md:hover:w-56'} md:overflow-visible overflow-hidden ` +
+          `md:transition-[width] md:duration-300 md:ease-in-out`
         }
         aria-label="Primary"
       >
@@ -126,19 +159,58 @@ export default function SideNav({
           {/* Top header */}
           <div className="px-3 md:px-2 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              <div className={`w-10 h-10 rounded-xl grid place-items-center ${isLight ? 'bg-fuchsia-100 text-fuchsia-700' : 'bg-fuchsia-600/20 text-fuchsia-200'} border ${isLight ? 'border-fuchsia-200' : 'border-fuchsia-500/20'}`}>
+              <div className={`w-10 h-10 flex-shrink-0 rounded-xl grid place-items-center ${
+                isLight 
+                  ? 'bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-300/50 shadow-sm' 
+                  : 'bg-fuchsia-600/30 text-fuchsia-200 border border-fuchsia-500/30 shadow-lg shadow-fuchsia-500/10'
+              }`}>
                 <span className="font-black">JP</span>
               </div>
-              <div className="hidden md:block md:opacity-0 md:group-hover/nav:opacity-100 md:transition-opacity md:duration-150 min-w-0">
+              <div className={`hidden md:block min-w-0 transition-opacity duration-200 ${
+                isPinned ? 'md:opacity-100' : 'md:opacity-0 md:group-hover/nav:opacity-100'
+              }`}>
                 <div className="font-bold truncate">Jamming</div>
                 <div className={`text-xs truncate ${isLight ? 'text-zinc-500' : 'text-white/60'}`}>Menu</div>
               </div>
             </div>
 
+            {/* Pin button (desktop only) */}
+            <button
+              type="button"
+              onClick={togglePin}
+              className={`hidden md:inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 ${
+                isPinned ? 'md:opacity-100' : 'md:opacity-0 md:group-hover/nav:opacity-100'
+              } ${
+                isLight 
+                  ? 'hover:bg-zinc-200/80 text-zinc-700' 
+                  : 'hover:bg-white/15 text-white/80'
+              }`}
+              aria-label={isPinned ? 'Unpin menu' : 'Pin menu'}
+              title={isPinned ? 'Unpin menu' : 'Pin menu'}
+            >
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isPinned ? 'rotate-45' : 'rotate-0'}`} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  d="M5 12h14M12 5l7 7-7 7" 
+                  className={isPinned ? 'opacity-100' : 'opacity-60'}
+                />
+              </svg>
+            </button>
+
+            {/* Mobile close button */}
             <button
               type="button"
               onClick={closeMobile}
-              className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl ${isLight ? 'hover:bg-zinc-100' : 'hover:bg-white/10'}`}
+              className={`md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl ${
+                isLight ? 'hover:bg-zinc-200/80' : 'hover:bg-white/15'
+              }`}
               aria-label="Close menu"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -161,8 +233,10 @@ export default function SideNav({
                 aria-haspopup="menu"
                 aria-expanded={isHoverCapable ? undefined : isThemesOpenMobile}
               >
-                <Icon>{items[0].icon}</Icon>
-                <span className="hidden md:block md:opacity-0 md:group-hover/nav:opacity-100 md:transition-opacity md:duration-150 font-semibold truncate">
+                <Icon isLight={isLight}>{items[0].icon}</Icon>
+                <span className={`font-semibold truncate transition-opacity duration-200 ${
+                  isPinned ? 'md:opacity-100' : 'md:opacity-0 md:group-hover/nav:opacity-100'
+                } hidden md:inline`}>
                   Themes
                 </span>
                 <span className="md:hidden font-semibold">Themes</span>
@@ -175,7 +249,7 @@ export default function SideNav({
 
               <div
                 className={
-                  `absolute left-full top-0 ml-2 w-44 rounded-2xl shadow-2xl backdrop-blur ${panelClasses} ` +
+                  `absolute left-full top-0 ml-2 w-44 rounded-2xl shadow-2xl ${panelClasses} ` +
                   `p-2 ${isHoverCapable ? 'hidden group-hover/themes:block' : (isThemesOpenMobile ? 'block' : 'hidden')}`
                 }
                 role="menu"
@@ -201,10 +275,12 @@ export default function SideNav({
                         if (!isHoverCapable) setIsThemesOpenMobile(false);
                       }}
                       className={
-                        `w-full flex items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold transition-colors ` +
+                        `w-full flex items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-200 ` +
                         (selected
-                          ? (isLight ? 'bg-fuchsia-100 text-fuchsia-800' : 'bg-fuchsia-600/20 text-fuchsia-200')
-                          : (isLight ? 'hover:bg-zinc-100' : 'hover:bg-white/10'))
+                          ? (isLight 
+                            ? 'bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200 shadow-md' 
+                            : 'bg-fuchsia-600/30 text-fuchsia-200 border border-fuchsia-500/30 shadow-lg shadow-fuchsia-500/10')
+                          : (isLight ? 'hover:bg-zinc-200/60' : 'hover:bg-white/15'))
                       }
                     >
                       <span>{opt.label}</span>
@@ -225,8 +301,10 @@ export default function SideNav({
               onClick={handleHome}
               className={`${itemBase} ${itemHover}`}
             >
-              <Icon>{items[1].icon}</Icon>
-              <span className="hidden md:block md:opacity-0 md:group-hover/nav:opacity-100 md:transition-opacity md:duration-150 font-semibold truncate">
+              <Icon isLight={isLight}>{items[1].icon}</Icon>
+              <span className={`font-semibold truncate transition-opacity duration-200 ${
+                isPinned ? 'md:opacity-100' : 'md:opacity-0 md:group-hover/nav:opacity-100'
+              } hidden md:inline`}>
                 Home
               </span>
               <span className="md:hidden font-semibold">Home</span>
@@ -234,7 +312,11 @@ export default function SideNav({
           </div>
 
           <div className="mt-auto px-3 md:px-2">
-            <div className={`text-[11px] ${isLight ? 'text-zinc-500' : 'text-white/50'} hidden md:block md:opacity-0 md:group-hover/nav:opacity-100 md:transition-opacity md:duration-150`}>
+            <div className={`text-[11px] ${
+              isLight ? 'text-zinc-500' : 'text-white/60'
+            } transition-opacity duration-200 ${
+              isPinned ? 'md:opacity-100' : 'md:opacity-0 md:group-hover/nav:opacity-100'
+            } hidden md:block`}>
               {theme === 'original' ? 'Original theme' : theme === 'dark' ? 'Dark theme' : 'Light theme'}
             </div>
           </div>

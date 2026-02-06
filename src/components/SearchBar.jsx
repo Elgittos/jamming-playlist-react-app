@@ -156,8 +156,8 @@ function SearchBar({ resetSignal = 0, theme = 'original' }) {
             placeholder="Search for songs, artists, or albums..."
             className={`w-full py-3 px-6 pr-12 rounded-full border-2 focus:outline-none focus:border-fuchsia-500 transition-all duration-300 ${
               isLight
-                ? 'bg-white/80 border-zinc-200 text-zinc-900 placeholder-zinc-500 focus:bg-white'
-                : 'bg-purple-900/50 border-purple-700/50 text-white placeholder-purple-300/60 focus:bg-purple-900/70'
+                ? 'bg-white/90 border-zinc-300/60 text-zinc-900 placeholder-zinc-500 focus:bg-white backdrop-blur-sm shadow-md'
+                : 'bg-purple-900/60 border-purple-700/60 text-white placeholder-purple-300/60 focus:bg-purple-900/80 backdrop-blur-sm shadow-lg'
             } ${isExpanded ? 'shadow-lg shadow-fuchsia-500/20' : ''}`}
           />
           
@@ -218,8 +218,10 @@ function SearchBar({ resetSignal = 0, theme = 'original' }) {
 
       {/* Dropdown Suggestions */}
       {showDropdown && (suggestions || shouldShowHistory) && (
-        <div className={`absolute top-full mt-2 w-full border-2 border-fuchsia-600/50 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto ${
-          isLight ? 'bg-white' : 'bg-purple-900'
+        <div className={`absolute top-full mt-2 w-full border-2 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-96 overflow-y-auto ${
+          isLight 
+            ? 'bg-white/95 border-zinc-300/60 backdrop-blur-xl shadow-zinc-300/20' 
+            : 'bg-purple-900/95 border-fuchsia-600/50 backdrop-blur-xl shadow-fuchsia-500/20'
         }`}>
           {/* Search History (subtle, only when input is empty/short) */}
           {shouldShowHistory && !suggestions && (
