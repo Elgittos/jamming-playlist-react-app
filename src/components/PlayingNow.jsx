@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePlayer } from '../hooks/usePlayer';
 
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 function PlayingNow() {
   const {
     isAuthed,
@@ -12,7 +19,9 @@ function PlayingNow() {
     togglePlayPause,
     next,
     previous,
-    seekToMs
+    seekToMs,
+    recentlyPlayed,
+    searchHistory
   } = usePlayer();
 
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -26,14 +35,10 @@ function PlayingNow() {
     return Math.max(0, Math.min(100, (displayProgressMs / durationMs) * 100));
   }, [displayProgressMs, durationMs]);
 
-  const loading = isPlaybackLoading;
-
-  const formatTime = (ms) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+  const item = playbackState?.item;
+  const releaseYear = item?.album?.release_date ? new Date(item.album.release_date).getFullYear() : null;
+  const genre = item?.artists?.[0]?.genres?.[0];
+  const playbackStatus = isPlaying ? 'Playing' : 'Paused';
 
   const getMsFromClientX = (clientX) => {
     const el = progressBarRef.current;
@@ -47,7 +52,6 @@ function PlayingNow() {
 
   const handleScrubStart = (event) => {
     if (!durationMs) return;
-
     event.preventDefault();
     activePointerIdRef.current = event.pointerId;
     progressBarRef.current?.setPointerCapture?.(event.pointerId);
@@ -73,7 +77,6 @@ function PlayingNow() {
     activePointerIdRef.current = null;
 
     try {
-      // Spec requirement: seek and resume playback on release
       await seekToMs(finalMs, { resume: true });
     } catch (error) {
       console.error('Seek error:', error);
@@ -82,7 +85,6 @@ function PlayingNow() {
 
   useEffect(() => {
     if (!isScrubbing) return;
-    // Keep scrub preview stable if track changes under us
     if (!durationMs) {
       setIsScrubbing(false);
     }
@@ -122,105 +124,110 @@ function PlayingNow() {
 
   return (
     <div
-      className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-fuchsia-800/30 flex flex-col"
+      className="surface-panel h-full rounded-2xl border border-fuchsia-700/30 p-3 sm:p-4 lg:p-5"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Playing Now</h2>
-        {/* Playing status badge moved to header */}
-        {!loading && playbackState?.item && (
-          <div>
-            {isPlaying ? (
-              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-green-500/20 text-green-400 rounded-full">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Playing
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-gray-500/20 text-gray-400 rounded-full">
-                <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
-                Paused
-              </span>
-            )}
-          </div>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-lg sm:text-xl font-bold text-white">Playing Now</h2>
+
+        {!isPlaybackLoading && item && (
+          <span
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs sm:text-sm ${
+              isPlaying ? 'bg-green-500/20 text-green-300' : 'bg-white/10 text-gray-300'
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full ${isPlaying ? 'bg-green-300 animate-pulse' : 'bg-gray-300'}`} />
+            {playbackStatus}
+          </span>
         )}
       </div>
-      
-      {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-400"></div>
+
+      {isPlaybackLoading && (
+        <div className="flex items-center justify-center py-10">
+          <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-fuchsia-400" />
         </div>
       )}
 
-      {!loading && !playbackState?.item && (
-        <p className="text-gray-400 text-center py-10">
-          {isAuthed ? 'Click any song to start playing!' : 'Login to Spotify to start playing.'}
+      {!isPlaybackLoading && !item && (
+        <p className="py-10 text-center text-sm text-gray-300 sm:text-base">
+          {isAuthed ? 'Click any song to start playing.' : 'Login to Spotify to start playing.'}
         </p>
       )}
 
-      {!loading && playbackState?.item && (
-        <div className="flex-1 flex flex-col justify-center space-y-4">
-          {/* Large Album Art - takes most space */}
-          <div className="flex justify-center flex-1 items-center">
+      {!isPlaybackLoading && item && (
+        <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
             <img
-              src={playbackState.item.album.images[0]?.url}
-              alt={playbackState.item.album.name}
-              className="w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[360px] 2xl:max-w-[400px] max-h-[220px] sm:max-h-[280px] lg:max-h-[360px] 2xl:max-h-[400px] rounded-xl shadow-2xl object-contain"
+              src={item.album.images[0]?.url}
+              alt={item.album.name}
+              className="mx-auto h-40 w-40 rounded-xl object-cover shadow-2xl sm:mx-0 sm:h-44 sm:w-44 lg:h-48 lg:w-48"
             />
+
+            <div className="min-w-0 space-y-2 text-center sm:text-left">
+              <h3 className="truncate text-lg font-bold text-white sm:text-xl">{item.name}</h3>
+              <p className="truncate text-sm text-gray-300 sm:text-base">
+                {item.artists.map((artist) => artist.name).join(', ')}
+              </p>
+              <p className="truncate text-xs text-gray-400 sm:text-sm">{item.album.name}</p>
+
+              <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
+                <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-gray-200">
+                  Album: {item.album.name}
+                </span>
+                <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-gray-200">
+                  Year: {releaseYear || 'N/A'}
+                </span>
+                <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-gray-200">
+                  Genre: {genre || 'N/A'}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Compact Track Info Below */}
-          <div className="text-center space-y-2 w-full">
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-1 px-4">
-              {playbackState.item.name}
-            </h3>
-            <p className="text-sm sm:text-base lg:text-lg text-gray-300 line-clamp-1 px-4">
-              {playbackState.item.artists.map(a => a.name).join(', ')}
-            </p>
-            <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 px-4">
-              {playbackState.item.album.name}
-            </p>
-          </div>
-
-          {/* Controls */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-4 sm:gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
               <button
+                type="button"
                 onClick={previous}
-                className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-fuchsia-800/30 text-white transition-colors hover:bg-fuchsia-700/50"
+                aria-label="Previous track"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
                 </svg>
               </button>
-              
+
               <button
+                type="button"
                 onClick={togglePlayPause}
-                className="p-4 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all hover:scale-110 shadow-lg"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-600 text-white shadow-lg transition-colors hover:bg-fuchsia-500"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                   </svg>
                 )}
               </button>
-              
+
               <button
+                type="button"
                 onClick={next}
-                className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-fuchsia-800/30 text-white transition-colors hover:bg-fuchsia-700/50"
+                aria-label="Next track"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
                 </svg>
               </button>
             </div>
 
-            {/* Progress Bar */}
-            <div className="space-y-2 w-full max-w-6xl mx-auto">
+            <div className="space-y-1.5">
               <div
                 ref={progressBarRef}
                 role="slider"
@@ -228,7 +235,7 @@ function PlayingNow() {
                 aria-valuemin={0}
                 aria-valuemax={durationMs || 0}
                 aria-valuenow={Math.floor(displayProgressMs)}
-                className="h-4 bg-gray-700/90 rounded-full overflow-hidden w-full touch-none select-none cursor-pointer"
+                className="h-3.5 w-full cursor-pointer touch-none select-none overflow-hidden rounded-full bg-white/20"
                 onPointerDown={handleScrubStart}
                 onPointerMove={handleScrubMove}
                 onPointerUp={handleScrubEnd}
@@ -239,10 +246,25 @@ function PlayingNow() {
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-400">
+              <div className="flex justify-between text-xs text-gray-300 sm:text-sm">
                 <span>{formatTime(displayProgressMs || 0)}</span>
-                <span>{formatTime(playbackState.item.duration_ms)}</span>
+                <span>{formatTime(item.duration_ms)}</span>
               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-xs text-gray-200 sm:grid-cols-3">
+            <div className="rounded-lg bg-white/10 px-2.5 py-2">
+              <p className="text-[11px] uppercase tracking-wide text-gray-300">Session Tracks</p>
+              <p className="mt-0.5 text-sm font-semibold text-white">{recentlyPlayed.length}</p>
+            </div>
+            <div className="rounded-lg bg-white/10 px-2.5 py-2">
+              <p className="text-[11px] uppercase tracking-wide text-gray-300">Recent Searches</p>
+              <p className="mt-0.5 text-sm font-semibold text-white">{searchHistory.length}</p>
+            </div>
+            <div className="col-span-2 rounded-lg bg-white/10 px-2.5 py-2 sm:col-span-1">
+              <p className="text-[11px] uppercase tracking-wide text-gray-300">Playback State</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-white">{playbackStatus}</p>
             </div>
           </div>
         </div>

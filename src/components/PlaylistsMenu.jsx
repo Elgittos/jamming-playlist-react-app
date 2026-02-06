@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getUserPlaylists } from '../api';
 
 export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) {
@@ -10,7 +10,7 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
     const fetchPlaylists = async () => {
       try {
         setLoading(true);
-        const data = await getUserPlaylists(20);
+        const data = await getUserPlaylists(30);
         setPlaylists(data);
         setError(null);
       } catch (err) {
@@ -24,73 +24,64 @@ export default function PlaylistsMenu({ onPlaylistSelect, selectedPlaylistId }) 
     fetchPlaylists();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-        <p className="text-indigo-300 text-center py-12">{error}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-indigo-800/30">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Your Playlists</h2>
-      
-      <div className="relative">
-        {/* Scrollable container */}
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-950">
-          {playlists.map((playlist) => (
-            <div
-              key={playlist.id}
-              onClick={() => onPlaylistSelect(playlist.id)}
-              className={`flex-shrink-0 w-[150px] sm:w-[170px] lg:w-[190px] h-[210px] sm:h-[230px] lg:h-[250px] bg-gradient-to-br from-indigo-800/50 to-purple-900/50 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl border-2 ${
-                selectedPlaylistId === playlist.id 
-                  ? 'border-indigo-400 shadow-lg shadow-indigo-500/50' 
-                  : 'border-indigo-800/30'
-              }`}
-            >
-              {/* Playlist Image */}
-              <div className="h-[120px] sm:h-[135px] lg:h-[160px] w-full overflow-hidden">
-                {playlist.images && playlist.images[0] ? (
-                  <img
-                    src={playlist.images[0].url}
-                    alt={playlist.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white/50" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
+    <div className="surface-panel rounded-2xl p-3 sm:p-4">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h2 className="text-base sm:text-lg font-semibold text-white">Playlists</h2>
+        {selectedPlaylistId && (
+          <button
+            type="button"
+            onClick={() => onPlaylistSelect(null)}
+            className="text-xs sm:text-sm text-fuchsia-300 hover:text-fuchsia-200"
+          >
+            Clear
+          </button>
+        )}
+      </div>
 
-              {/* Playlist Info */}
-              <div className="p-3">
-                <h3 className="text-white font-semibold text-xs sm:text-sm line-clamp-2 mb-1">
-                  {playlist.name}
-                </h3>
-                <p className="text-indigo-300 text-[11px] sm:text-xs">
-                  {playlist.tracks.total} tracks
-                </p>
-              </div>
-            </div>
+      {loading && (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div key={item} className="h-11 w-28 shrink-0 animate-pulse rounded-full bg-white/10" />
           ))}
         </div>
-      </div>
+      )}
+
+      {error && !loading && <p className="text-sm text-red-300">{error}</p>}
+
+      {!loading && !error && (
+        <div className="overflow-x-auto pb-1">
+          <div className="flex min-w-max items-center gap-2.5 pr-1">
+            <button
+              type="button"
+              onClick={() => onPlaylistSelect(null)}
+              className={`h-11 shrink-0 rounded-full border px-4 text-sm transition-colors ${
+                selectedPlaylistId === null
+                  ? 'border-fuchsia-400 bg-fuchsia-600/30 text-white'
+                  : 'border-white/15 bg-white/5 text-gray-200 hover:bg-white/10'
+              }`}
+            >
+              All Playlists
+            </button>
+
+            {playlists.map((playlist) => (
+              <button
+                key={playlist.id}
+                type="button"
+                onClick={() => onPlaylistSelect(playlist.id)}
+                className={`h-11 shrink-0 rounded-full border px-4 text-sm transition-colors ${
+                  selectedPlaylistId === playlist.id
+                    ? 'border-fuchsia-400 bg-fuchsia-600/30 text-white'
+                    : 'border-white/15 bg-white/5 text-gray-200 hover:bg-white/10'
+                }`}
+                title={`${playlist.name} - ${playlist.tracks.total} tracks`}
+              >
+                {playlist.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

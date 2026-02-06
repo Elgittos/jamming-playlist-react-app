@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { searchSpotify, isAuthenticated } from '../api';
 import { usePlayer } from '../hooks/usePlayer';
 
-function SearchBar() {
+function SearchBar({ resetSignal = 0 }) {
   const [query, setQuery] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
@@ -76,6 +76,15 @@ function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setQuery('');
+    setSuggestions(null);
+    setShowDropdown(false);
+    setIsFocused(false);
+    setIsExpanded(false);
+    inputRef.current?.blur();
+  }, [resetSignal]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmed = query.trim();
@@ -141,7 +150,7 @@ function SearchBar() {
               }
             }}
             placeholder="Search for songs, artists, or albums..."
-            className={`w-full py-3 px-6 pr-12 rounded-full bg-purple-900/50 border-2 border-purple-700/50 text-white placeholder-purple-300/60 focus:outline-none focus:border-fuchsia-500 focus:bg-purple-900/70 transition-all duration-300 ${
+            className={`w-full py-2.5 px-5 pr-12 rounded-full bg-black/25 border border-white/20 text-white placeholder-gray-300/70 focus:outline-none focus:border-fuchsia-400 focus:bg-black/40 transition-all duration-300 ${
               isExpanded ? 'shadow-lg shadow-fuchsia-500/20' : ''
             }`}
           />
@@ -149,7 +158,7 @@ function SearchBar() {
           {/* Search icon/button */}
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!query.trim()}
           >
             {isLoading ? (
@@ -203,7 +212,7 @@ function SearchBar() {
 
       {/* Dropdown Suggestions */}
       {showDropdown && (suggestions || shouldShowHistory) && (
-        <div className="absolute top-full mt-2 w-full bg-purple-900 border-2 border-fuchsia-600/50 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full mt-2 w-full bg-[#120f1d] border border-fuchsia-600/40 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto">
           {/* Search History (subtle, only when input is empty/short) */}
           {shouldShowHistory && !suggestions && (
             <div className="p-3">

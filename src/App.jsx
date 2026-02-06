@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import RecentlyPlayed from './components/RecentlyPlayed'
 import YourPlaylist from './components/YourPlaylist'
@@ -7,61 +7,86 @@ import SearchBar from './components/SearchBar'
 import GenreSection from './components/GenreSection'
 import SpotifyPlayer from './components/SpotifyPlayer'
 import PlaylistsMenu from './components/PlaylistsMenu'
+import SideMenu from './components/SideMenu'
+
+const THEME_STORAGE_KEY = 'jp_theme_v1'
+const VALID_THEMES = new Set(['dark', 'light', 'original'])
 
 function App() {
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null)
+  const [searchResetSignal, setSearchResetSignal] = useState(0)
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'original'
+    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY)
+    return VALID_THEMES.has(storedTheme) ? storedTheme : 'original'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
+  }, [theme])
 
   const handlePlaylistSelect = (playlistId) => {
-    setSelectedPlaylistId(playlistId);
-  };
+    setSelectedPlaylistId(playlistId)
+  }
+
+  const handleHome = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setSearchResetSignal((prev) => prev + 1)
+  }
 
   return (
+    <main className="app-bg min-h-screen text-white">
+      <SideMenu theme={theme} onThemeChange={setTheme} onHome={handleHome} />
 
-    <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
-        {/* Spotify Web Player */}
+      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-3 px-3 py-4 sm:gap-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
         <SpotifyPlayer />
 
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-6">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              🎵 Jamming Playlist App
+        <header id="home-top" className="surface-panel rounded-2xl p-3 sm:p-4">
+          <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight">
+              Jamming Playlist App
             </h1>
 
-            {/* Search Bar */}
-            <div className="w-full lg:flex-1 lg:max-w-2xl">
-              <SearchBar />
+            <div className="w-full">
+              <SearchBar resetSignal={searchResetSignal} />
             </div>
 
             <Link
               to="/test"
-              className="w-full sm:w-auto text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-yellow-500/50"
+              className="w-full sm:w-auto text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2.5 px-5 rounded-full transition-all shadow-lg hover:shadow-yellow-500/40"
             >
               Test Login
             </Link>
           </div>
-        </div>
+        </header>
 
-        <RecentlyPlayed />
+        <section id="playlist-strip">
+          <PlaylistsMenu
+            onPlaylistSelect={handlePlaylistSelect}
+            selectedPlaylistId={selectedPlaylistId}
+          />
+        </section>
 
-        {/* Playlists Menu */}
-        <PlaylistsMenu
-          onPlaylistSelect={handlePlaylistSelect}
-          selectedPlaylistId={selectedPlaylistId}
-        />
+        <section className="grid grid-cols-1 items-start gap-3 xl:grid-cols-[minmax(280px,1fr)_minmax(380px,1.35fr)_minmax(260px,1fr)] sm:gap-4">
+          <div className="order-2 xl:order-1">
+            <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
+          </div>
+          <div id="playing-now" className="order-1 xl:order-2">
+            <PlayingNow />
+          </div>
+          <div className="order-3 xl:order-3">
+            <RecentlyPlayed compact />
+          </div>
+        </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full lg:min-h-[600px]">
-          <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
-          <PlayingNow />
-        </div>
-
-        {/* Genre Sections */}
-        <GenreSection genre="Pop" gradientFrom="from-pink-900" gradientVia="via-rose-900" gradientTo="to-pink-950" />
-        <GenreSection genre="Rap" gradientFrom="from-orange-900" gradientVia="via-amber-900" gradientTo="to-orange-950" />
-        <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" />
-        <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" />
-        <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" />
+        <section className="grid grid-cols-1 gap-3 sm:gap-4">
+          <GenreSection genre="Pop" gradientFrom="from-pink-900" gradientVia="via-rose-900" gradientTo="to-pink-950" compact />
+          <GenreSection genre="Rap" gradientFrom="from-orange-900" gradientVia="via-amber-900" gradientTo="to-orange-950" compact />
+          <GenreSection genre="Rock" gradientFrom="from-red-900" gradientVia="via-rose-950" gradientTo="to-red-950" compact />
+          <GenreSection genre="Disco" gradientFrom="from-cyan-900" gradientVia="via-blue-900" gradientTo="to-cyan-950" compact />
+          <GenreSection genre="Bachata" gradientFrom="from-emerald-900" gradientVia="via-teal-900" gradientTo="to-emerald-950" compact />
+        </section>
       </div>
     </main>
   )

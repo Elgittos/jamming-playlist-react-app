@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import SongCard from './SongCard';
 import { searchByGenre, isAuthenticated } from '../api';
 
-function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
+function GenreSection({ genre, gradientFrom, gradientVia, gradientTo, compact = false }) {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,35 +42,35 @@ function GenreSection({ genre, gradientFrom, gradientVia, gradientTo }) {
   }, [genre]);
 
   return (
-    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl p-4 sm:p-5 lg:p-6 border border-opacity-30`}>
-      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4">{genre}</h2>
+    <div className={`w-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-2xl shadow-2xl ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5 lg:p-6'} border border-opacity-30`}>
+      <h2 className={`${compact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl lg:text-2xl'} font-bold text-white mb-2.5 sm:mb-3`}>{genre}</h2>
       
       {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
         </div>
       )}
 
       {error && !loading && (
-        <div className="text-center py-12">
-          <p className="text-white/70 text-lg">{error}</p>
+        <div className="text-center py-8">
+          <p className="text-white/70 text-sm sm:text-base">{error}</p>
         </div>
       )}
 
       {!loading && !error && songs.length > 0 && (
         <div className="relative">
           {/* Scrollable container */}
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-950">
+          <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-950">
             {songs.map((song) => (
-              <SongCard key={song.id} song={song} />
+              <SongCard key={song.id} song={song} compact={compact} />
             ))}
           </div>
         </div>
       )}
 
       {!loading && !error && songs.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-white/70 text-lg">No {genre} tracks found</p>
+        <div className="text-center py-8">
+          <p className="text-white/70 text-sm sm:text-base">No {genre} tracks found</p>
         </div>
       )}
     </div>
