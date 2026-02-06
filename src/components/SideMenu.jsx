@@ -5,7 +5,8 @@ const MOBILE_MEDIA_QUERY = '(max-width: 1024px)';
 const THEME_OPTIONS = [
   { id: 'dark', label: 'Dark' },
   { id: 'light', label: 'Light' },
-  { id: 'original', label: 'Original' }
+  { id: 'original', label: 'Original' },
+  { id: 'vibrant', label: 'Vibrant' }
 ];
 
 function scrollToSection(sectionId) {
@@ -19,10 +20,8 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
   });
-  const [isDesktopExpanded, setIsDesktopExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState(false);
-  const collapseTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -47,14 +46,6 @@ function SideMenu({ theme, onThemeChange, onHome }) {
   }, []);
 
   useEffect(() => {
-    return () => {
-      if (collapseTimeoutRef.current) {
-        clearTimeout(collapseTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isMobileOrTablet || !isMobileMenuOpen) return undefined;
 
     const handleEscape = (event) => {
@@ -68,7 +59,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isMobileMenuOpen, isMobileOrTablet]);
 
-  const showLabels = isMobileOrTablet ? isMobileMenuOpen : isDesktopExpanded;
+  const showLabels = isMobileOrTablet ? isMobileMenuOpen : true;
 
   const closeTouchMenu = () => {
     if (!isMobileOrTablet) return;
@@ -88,32 +79,19 @@ function SideMenu({ theme, onThemeChange, onHome }) {
 
   const onDesktopMouseEnter = () => {
     if (isMobileOrTablet) return;
-    if (collapseTimeoutRef.current) {
-      clearTimeout(collapseTimeoutRef.current);
-      collapseTimeoutRef.current = null;
-    }
-    setIsDesktopExpanded(true);
+    setIsThemeSubmenuOpen(true);
   };
 
   const onDesktopMouseLeave = () => {
     if (isMobileOrTablet) return;
-    if (collapseTimeoutRef.current) {
-      clearTimeout(collapseTimeoutRef.current);
-    }
-    collapseTimeoutRef.current = window.setTimeout(() => {
-      setIsDesktopExpanded(false);
-      setIsThemeSubmenuOpen(false);
-      collapseTimeoutRef.current = null;
-    }, 180);
+    setIsThemeSubmenuOpen(false);
   };
 
   const menuShellClass = isMobileOrTablet
     ? `fixed top-0 left-0 z-50 h-screen w-44 transition-transform duration-300 ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
       }`
-    : `fixed top-3 left-3 z-40 h-[calc(100vh-1.5rem)] transition-[width] duration-300 ${
-        isDesktopExpanded ? 'w-[24rem]' : 'w-16'
-      }`;
+    : 'fixed top-3 left-3 z-40 h-[calc(100vh-1.5rem)] w-56';
 
   return (
     <>
