@@ -19,7 +19,6 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
   });
-  const isDesktopExpanded = true; // Always expanded on desktop
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState(false);
   const collapseTimeoutRef = useRef(null);
@@ -68,7 +67,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isMobileMenuOpen, isMobileOrTablet]);
 
-  const showLabels = isMobileOrTablet ? isMobileMenuOpen : isDesktopExpanded;
+  const showLabels = isMobileOrTablet ? isMobileMenuOpen : true; // Always show on desktop
 
   const closeTouchMenu = () => {
     if (!isMobileOrTablet) return;
@@ -86,14 +85,9 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     closeTouchMenu();
   };
 
-  const onDesktopMouseEnter = () => {
-    if (isMobileOrTablet) return;
-    // Desktop menu is always expanded, no need to toggle
-  };
-
   const onDesktopMouseLeave = () => {
     if (isMobileOrTablet) return;
-    // Desktop menu stays expanded, only close theme submenu
+    // Close theme submenu when mouse leaves menu area
     if (collapseTimeoutRef.current) {
       clearTimeout(collapseTimeoutRef.current);
     }
@@ -107,9 +101,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     ? `fixed top-0 left-0 z-50 h-screen w-44 transition-transform duration-300 ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
       }`
-    : `fixed top-3 left-3 z-40 h-[calc(100vh-1.5rem)] transition-[width] duration-300 ${
-        isDesktopExpanded ? 'w-[24rem]' : 'w-16'
-      }`;
+    : 'fixed top-3 left-3 z-40 h-[calc(100vh-1.5rem)] w-[24rem]'; // Always expanded on desktop
 
   return (
     <>
@@ -135,7 +127,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
         />
       )}
 
-      <div className={menuShellClass} onMouseEnter={onDesktopMouseEnter} onMouseLeave={onDesktopMouseLeave}>
+      <div className={menuShellClass} onMouseLeave={onDesktopMouseLeave}>
         <aside className="absolute left-0 top-0 h-full w-56 rounded-2xl border border-white/10 bg-black/65 px-2 py-3 text-white backdrop-blur-xl">
           <nav className="relative h-full">
             <ul className="space-y-1">
