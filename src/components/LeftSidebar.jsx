@@ -98,12 +98,12 @@ function LeftSidebar() {
           title={isPinned ? 'Unpin menu' : 'Pin menu'}
         >
           {isPinned ? (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+            <svg className="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
             </svg>
           ) : (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
             </svg>
           )}
         </button>
@@ -114,6 +114,7 @@ function LeftSidebar() {
         {menuItems.map((item) => (
           <button
             key={item.id}
+            aria-label={item.name}
             className="flex items-center gap-4 p-3 rounded-xl bg-purple-900/30 hover:bg-fuchsia-800/40 text-purple-200 hover:text-white transition-all duration-200 group"
           >
             <div className="flex-shrink-0 text-purple-300 group-hover:text-fuchsia-400 transition-colors duration-200">
