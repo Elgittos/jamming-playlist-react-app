@@ -94,7 +94,13 @@ function PlayingNow() {
   useEffect(() => {
     if (!isScrubbing) return;
 
-    const handleGlobalMove = (e) => handleScrubMove(e);
+    const handleGlobalMove = (e) => {
+      // Only prevent default if we're actually scrubbing
+      if (e.type.includes('touch')) {
+        e.preventDefault();
+      }
+      handleScrubMove(e);
+    };
     const handleGlobalEnd = (e) => handleScrubEnd(e);
 
     window.addEventListener('mousemove', handleGlobalMove);
@@ -211,7 +217,7 @@ function PlayingNow() {
             <div className="space-y-1.5 w-full max-w-6xl mx-auto touch-none">
               <div 
                 ref={progressBarRef}
-                className="h-2.5 sm:h-3 bg-gray-700 rounded-full overflow-hidden w-full cursor-pointer relative"
+                className="h-2.5 sm:h-3 bg-gray-700 rounded-full overflow-hidden w-full cursor-pointer relative group"
                 onMouseDown={handleScrubStart}
                 onTouchStart={handleScrubStart}
                 onClick={(e) => {
@@ -225,9 +231,10 @@ function PlayingNow() {
                   className="h-full bg-gradient-to-r from-fuchsia-600 via-purple-500 to-fuchsia-600 transition-all relative"
                   style={{ width: `${progressPercentage}%`, transitionDuration: isScrubbing ? '0ms' : '500ms' }}
                 >
-                  {/* Scrubber handle - only visible when scrubbing or hovering */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ opacity: isScrubbing ? 1 : undefined }}
+                  {/* Scrubber handle - visible when scrubbing or hovering */}
+                  <div 
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full shadow-lg transition-opacity"
+                    style={{ opacity: isScrubbing ? 1 : 0 }}
                   />
                 </div>
               </div>

@@ -69,7 +69,7 @@ export function PlayerProvider({ children }) {
     return DEFAULT_SEED_TRACKS;
   });
 
-  // Search history (last 3-4 searches)
+  // Search history (last 4 searches)
   const [searchHistory, setSearchHistory] = useState(() => {
     const stored = localStorage.getItem('searchHistory');
     if (stored) {
