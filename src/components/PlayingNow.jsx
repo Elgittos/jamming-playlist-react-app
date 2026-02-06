@@ -1,54 +1,32 @@
-import { useState, useEffect } from 'react';
-import { getPlaybackState, pausePlayback, resumePlayback, skipToNext, skipToPrevious } from '../api';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePlayer } from '../hooks/usePlayer';
 
 function PlayingNow() {
-  const [playbackState, setPlaybackState] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    isAuthed,
+    playbackState,
+    isPlaybackLoading,
+    isPlaying,
+    progressMs,
+    durationMs,
+    togglePlayPause,
+    next,
+    previous,
+    seekToMs
+  } = usePlayer();
 
-  useEffect(() => {
-    async function fetchPlayback() {
-      try {
-        const state = await getPlaybackState();
-        setPlaybackState(state);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching playback:', err);
-        setLoading(false);
-      }
-    }
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  const [scrubMs, setScrubMs] = useState(0);
+  const progressBarRef = useRef(null);
+  const activePointerIdRef = useRef(null);
 
-    fetchPlayback();
-    const interval = setInterval(fetchPlayback, 2000); // Update every 2 seconds
-    return () => clearInterval(interval);
-  }, []);
+  const displayProgressMs = isScrubbing ? scrubMs : progressMs;
+  const progressPercent = useMemo(() => {
+    if (!durationMs) return 0;
+    return Math.max(0, Math.min(100, (displayProgressMs / durationMs) * 100));
+  }, [displayProgressMs, durationMs]);
 
-  const handlePlayPause = async () => {
-    try {
-      if (playbackState?.is_playing) {
-        await pausePlayback();
-      } else {
-        await resumePlayback();
-      }
-    } catch (error) {
-      console.error('Play/pause error:', error);
-    }
-  };
-
-  const handleNext = async () => {
-    try {
-      await skipToNext();
-    } catch (error) {
-      console.error('Next error:', error);
-    }
-  };
-
-  const handlePrevious = async () => {
-    try {
-      await skipToPrevious();
-    } catch (error) {
-      console.error('Previous error:', error);
-    }
-  };
+  const loading = isPlaybackLoading;
 
   const formatTime = (ms) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -57,18 +35,103 @@ function PlayingNow() {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const progress = playbackState?.progress_ms && playbackState?.item?.duration_ms
-    ? (playbackState.progress_ms / playbackState.item.duration_ms) * 100
-    : 0;
+  const getMsFromClientX = (clientX) => {
+    const el = progressBarRef.current;
+    if (!el || !durationMs) return 0;
+
+    const rect = el.getBoundingClientRect();
+    const ratio = (clientX - rect.left) / rect.width;
+    const clampedRatio = Math.max(0, Math.min(1, ratio));
+    return Math.round(clampedRatio * durationMs);
+  };
+
+  const handleScrubStart = (event) => {
+    if (!durationMs) return;
+
+    event.preventDefault();
+    activePointerIdRef.current = event.pointerId;
+    progressBarRef.current?.setPointerCapture?.(event.pointerId);
+    setIsScrubbing(true);
+    setScrubMs(getMsFromClientX(event.clientX));
+  };
+
+  const handleScrubMove = (event) => {
+    if (!isScrubbing) return;
+    if (activePointerIdRef.current !== event.pointerId) return;
+    event.preventDefault();
+    setScrubMs(getMsFromClientX(event.clientX));
+  };
+
+  const handleScrubEnd = async (event) => {
+    if (!isScrubbing) return;
+    if (activePointerIdRef.current !== event.pointerId) return;
+
+    event.preventDefault();
+    const finalMs = getMsFromClientX(event.clientX);
+    setScrubMs(finalMs);
+    setIsScrubbing(false);
+    activePointerIdRef.current = null;
+
+    try {
+      // Spec requirement: seek and resume playback on release
+      await seekToMs(finalMs, { resume: true });
+    } catch (error) {
+      console.error('Seek error:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!isScrubbing) return;
+    // Keep scrub preview stable if track changes under us
+    if (!durationMs) {
+      setIsScrubbing(false);
+    }
+  }, [durationMs, isScrubbing]);
+
+  const handleKeyDown = async (event) => {
+    if (!durationMs && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) return;
+
+    if (event.key === ' ' || event.code === 'Space') {
+      event.preventDefault();
+      try {
+        await togglePlayPause();
+      } catch (error) {
+        console.error('Play/pause error:', error);
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      try {
+        await seekToMs((progressMs || 0) - 5000, { resume: true });
+      } catch (error) {
+        console.error('Seek error:', error);
+      }
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      try {
+        await seekToMs((progressMs || 0) + 5000, { resume: true });
+      } catch (error) {
+        console.error('Seek error:', error);
+      }
+    }
+  };
 
   return (
-    <div className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 h-full border border-fuchsia-800/30 flex flex-col">
+    <div
+      className="w-full bg-gradient-to-br from-fuchsia-900 via-purple-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-fuchsia-800/30 flex flex-col"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Playing Now</h2>
         {/* Playing status badge moved to header */}
         {!loading && playbackState?.item && (
           <div>
-            {playbackState.is_playing ? (
+            {isPlaying ? (
               <span className="inline-flex items-center gap-2 text-sm px-4 py-2 bg-green-500/20 text-green-400 rounded-full">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 Playing
@@ -90,7 +153,9 @@ function PlayingNow() {
       )}
 
       {!loading && !playbackState?.item && (
-        <p className="text-gray-400 text-center py-12">Click any song to start playing!</p>
+        <p className="text-gray-400 text-center py-10">
+          {isAuthed ? 'Click any song to start playing!' : 'Login to Spotify to start playing.'}
+        </p>
       )}
 
       {!loading && playbackState?.item && (
@@ -121,7 +186,7 @@ function PlayingNow() {
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-4 sm:gap-6">
               <button
-                onClick={handlePrevious}
+                onClick={previous}
                 className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -130,10 +195,10 @@ function PlayingNow() {
               </button>
               
               <button
-                onClick={handlePlayPause}
+                onClick={togglePlayPause}
                 className="p-4 rounded-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white transition-all hover:scale-110 shadow-lg"
               >
-                {playbackState.is_playing ? (
+                {isPlaying ? (
                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -145,7 +210,7 @@ function PlayingNow() {
               </button>
               
               <button
-                onClick={handleNext}
+                onClick={next}
                 className="p-3 rounded-full bg-fuchsia-800/30 hover:bg-fuchsia-700/50 text-white transition-all hover:scale-110"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -156,14 +221,26 @@ function PlayingNow() {
 
             {/* Progress Bar */}
             <div className="space-y-2 w-full max-w-6xl mx-auto">
-              <div className="h-3 bg-gray-700 rounded-full overflow-hidden w-full">
-                <div 
-                  className="h-full bg-gradient-to-r from-fuchsia-600 via-purple-500 to-fuchsia-600 transition-all duration-500"
-                  style={{ width: `${progress}%` }}
+              <div
+                ref={progressBarRef}
+                role="slider"
+                aria-label="Seek"
+                aria-valuemin={0}
+                aria-valuemax={durationMs || 0}
+                aria-valuenow={Math.floor(displayProgressMs)}
+                className="h-4 bg-gray-700/90 rounded-full overflow-hidden w-full touch-none select-none cursor-pointer"
+                onPointerDown={handleScrubStart}
+                onPointerMove={handleScrubMove}
+                onPointerUp={handleScrubEnd}
+                onPointerCancel={handleScrubEnd}
+              >
+                <div
+                  className="h-full bg-gradient-to-r from-fuchsia-600 via-purple-500 to-fuchsia-600"
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
               <div className="flex justify-between text-sm text-gray-400">
-                <span>{formatTime(playbackState.progress_ms || 0)}</span>
+                <span>{formatTime(displayProgressMs || 0)}</span>
                 <span>{formatTime(playbackState.item.duration_ms)}</span>
               </div>
             </div>

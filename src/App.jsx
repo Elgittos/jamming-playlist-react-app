@@ -18,12 +18,12 @@ function App() {
   return (
 
     <main className="min-h-screen bg-gradient-to-br from-purple-950 via-violet-950 to-black">
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-6 sm:gap-8 p-4 md:p-6 lg:p-8">
+      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-4 sm:gap-6 p-4 md:p-6 lg:p-8">
         {/* Spotify Web Player */}
         <SpotifyPlayer />
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-5 sm:p-8 lg:p-10 rounded-2xl shadow-2xl">
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-900 p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-6">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
               🎵 Jamming Playlist App
@@ -51,7 +51,7 @@ function App() {
           selectedPlaylistId={selectedPlaylistId}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full lg:min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full lg:min-h-[600px]">
           <YourPlaylist selectedPlaylistId={selectedPlaylistId} />
           <PlayingNow />
         </div>

@@ -759,3 +759,44 @@ export async function skipToPrevious() {
     throw error;
   }
 }
+
+/**
+ * Seek playback to a position in the current track
+ * @param {number} positionMs - Position in milliseconds
+ * @param {string} deviceId - Optional device ID
+ */
+export async function seekPlayback(positionMs, deviceId = null) {
+  try {
+    const token = await getAccessToken();
+
+    const targetDeviceId = deviceId || window.spotifyDeviceId;
+    const params = new URLSearchParams({
+      position_ms: Math.max(0, Math.floor(positionMs)).toString()
+    });
+
+    if (targetDeviceId) {
+      params.set('device_id', targetDeviceId);
+    }
+
+    const response = await fetch(`https://api.spotify.com/v1/me/player/seek?${params.toString()}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 204) {
+      return true;
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || `Failed to seek (${response.status})`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Error seeking playback:', error);
+    throw error;
+  }
+}
