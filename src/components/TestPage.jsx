@@ -47,15 +47,15 @@ function TestPage() {
         onClick={() => navigate('/')}
         className="mb-6 bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-6 rounded-full transition-all"
       >
-        â† Back to App
+        ← Back to App
       </button>
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-sky-900 p-5 sm:p-8 rounded-2xl shadow-2xl mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">ðŸ§ª Spotify API Test Page</h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">🧪 Spotify API Test Page</h1>
           {user && (
-            <p className="text-gray-300 text-lg">Welcome, {user.display_name}! ðŸ‘‹</p>
+            <p className="text-gray-300 text-lg">Welcome, {user.display_name}! 👋</p>
           )}
           <div className="mt-4">
             <LoginButton />
@@ -73,7 +73,7 @@ function TestPage() {
           <div className="space-y-6">
             {/* User Profile */}
             <div className="bg-gradient-to-br from-teal-900 via-green-950 to-black rounded-2xl shadow-2xl p-6 border border-teal-800/30">
-              <h3 className="text-2xl font-bold text-teal-400 mb-4">ðŸ‘¤ User Profile</h3>
+              <h3 className="text-2xl font-bold text-teal-400 mb-4">👤 User Profile</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white">
                 <div>
                   <p className="text-gray-400">Name:</p>
@@ -104,12 +104,12 @@ function TestPage() {
 
             {/* Recently Played */}
             <div className="bg-gradient-to-br from-blue-900 via-slate-950 to-black rounded-2xl shadow-2xl p-6 border border-blue-800/30">
-              <h3 className="text-2xl font-bold text-blue-400 mb-4">ðŸŽµ Recently Played (5 tracks)</h3>
+              <h3 className="text-2xl font-bold text-blue-400 mb-4">🎵 Recently Played (5 tracks)</h3>
               <div className="space-y-3">
                 {apiData.recentTracks.map((item, idx) => (
                   <div key={idx} className="bg-white/5 rounded-lg p-4 border-l-4 border-blue-500">
                     <p className="font-semibold text-white">{item.track.name}</p>
-                    <p className="text-gray-400">{item.track.artists[0].name} â€¢ {item.track.album.name}</p>
+                    <p className="text-gray-400">{item.track.artists[0].name} • {item.track.album.name}</p>
                     <p className="text-xs text-gray-500 mt-1">
                       Played: {new Date(item.played_at).toLocaleString()}
                     </p>
@@ -120,16 +120,16 @@ function TestPage() {
 
             {/* Playlists */}
             <div className="bg-gradient-to-br from-sky-900 via-cyan-950 to-black rounded-2xl shadow-2xl p-6 border border-sky-800/30">
-              <h3 className="text-2xl font-bold text-sky-400 mb-4">ðŸ“‚ Your Playlists (5)</h3>
+              <h3 className="text-2xl font-bold text-sky-400 mb-4">🎶 Your Playlists (5)</h3>
               <div className="space-y-3">
                 {apiData.playlists.map((playlist, idx) => (
                   <div key={idx} className="bg-white/5 rounded-lg p-4 border-l-4 border-sky-500">
                     <p className="font-semibold text-white">{playlist.name}</p>
                     <p className="text-gray-400">
-                      {playlist.tracks.total} tracks â€¢ Owner: {playlist.owner.display_name}
+                      {playlist.tracks.total} tracks • Owner: {playlist.owner.display_name}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {playlist.public ? 'ðŸŒ Public' : 'ðŸ”’ Private'}
+                      {playlist.public ? '🌐 Public' : '🔒 Private'}
                     </p>
                   </div>
                 ))}
@@ -139,7 +139,7 @@ function TestPage() {
             {/* Raw JSON */}
             <details className="bg-gray-900 rounded-2xl shadow-2xl p-6 border border-gray-700">
               <summary className="text-xl font-bold text-orange-400 cursor-pointer hover:text-orange-300">
-                ðŸ“„ View Raw JSON Response
+                📄 View Raw JSON Response
               </summary>
               <pre className="mt-4 text-xs text-gray-300 overflow-auto max-h-96 bg-black rounded-lg p-4">
                 {JSON.stringify(apiData, null, 2)}

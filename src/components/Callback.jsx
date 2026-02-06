@@ -10,14 +10,14 @@ function Callback() {
     async function processCallback() {
       try {
         await handleCallback();
-        setStatus('âœ… Authentication successful! Redirecting...');
+        setStatus('✔ Authentication successful! Redirecting...');
         
         // Redirect to home page after successful auth
         setTimeout(() => {
           navigate('/');
         }, 1500);
       } catch (error) {
-        setStatus('âŒ Authentication failed: ' + error.message);
+        setStatus('❌ Authentication failed: ' + error.message);
         console.error('Callback error:', error);
       }
     }
