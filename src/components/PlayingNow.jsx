@@ -187,7 +187,11 @@ function PlayingNow() {
                 </p>
                 {playbackState.item.album.release_date && (
                   <p className="text-gray-400">
-                    <span className="text-gray-500">Year:</span> {playbackState.item.album.release_date.split('-')[0]}
+                    <span className="text-gray-500">Year:</span> {
+                      playbackState.item.album.release_date.includes('-') 
+                        ? playbackState.item.album.release_date.split('-')[0]
+                        : playbackState.item.album.release_date.substring(0, 4)
+                    }
                   </p>
                 )}
                 <p className="text-gray-400">

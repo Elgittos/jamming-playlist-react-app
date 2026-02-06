@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 const THEMES = {
   dark: {
     name: 'Dark',
-    gradient: 'from-purple-950 via-violet-950 to-black'
+    gradient: 'from-gray-900 via-slate-900 to-black'
   },
   light: {
     name: 'Light',
