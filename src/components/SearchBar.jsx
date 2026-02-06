@@ -130,7 +130,7 @@ function SearchBar({ resetSignal = 0 }) {
   };
 
   return (
-    <div ref={dropdownRef} className="w-full relative z-50">
+    <div ref={dropdownRef} className="w-full relative">
       <form onSubmit={handleSubmit}>
         <div className="relative group">
           <input

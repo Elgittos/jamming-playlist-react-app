@@ -39,7 +39,7 @@ function App() {
     <main className="app-bg min-h-screen text-white">
       <SideMenu theme={theme} onThemeChange={setTheme} onHome={handleHome} />
 
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-3 px-3 py-4 sm:gap-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6 lg:pl-64">
+      <div className="mx-auto w-full max-w-7xl 2xl:max-w-screen-2xl flex flex-col gap-3 px-3 py-4 sm:gap-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6 lg:pl-60">
         <SpotifyPlayer />
 
         <header id="home-top" className="surface-panel rounded-2xl p-3 sm:p-4">
