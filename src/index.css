@@ -2,24 +2,34 @@
 
 :root,
 :root[data-theme='original'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #0f2f3f 0%, #0a1927 42%, #050b12 100%);
-  --surface-bg: linear-gradient(140deg, rgba(10, 28, 41, 0.88), rgba(6, 15, 24, 0.94));
-  --surface-border: rgba(34, 211, 238, 0.24);
-  --surface-shadow: 0 16px 44px rgba(2, 8, 16, 0.52);
+  --app-bg: radial-gradient(circle at 5% 0%, #0a4c61 0%, #063347 42%, #020b15 100%);
+  --surface-bg: linear-gradient(140deg, rgba(6, 182, 212, 0.18), rgba(8, 145, 178, 0.24));
+  --surface-border: rgba(34, 211, 238, 0.45);
+  --surface-shadow: 0 16px 44px rgba(6, 182, 212, 0.35), 0 0 80px rgba(34, 211, 238, 0.15);
 }
 
 :root[data-theme='dark'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #111827 0%, #0b1220 45%, #030712 100%);
-  --surface-bg: linear-gradient(140deg, rgba(17, 24, 39, 0.9), rgba(4, 10, 22, 0.95));
-  --surface-border: rgba(56, 189, 248, 0.24);
-  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.56);
+  --app-bg: radial-gradient(circle at 5% 0%, #1a1d29 0%, #0f1419 45%, #050709 100%);
+  --surface-bg: linear-gradient(140deg, 
+    rgba(203, 213, 225, 0.08) 0%, 
+    rgba(148, 163, 184, 0.12) 50%, 
+    rgba(100, 116, 139, 0.08) 100%);
+  --surface-border: rgba(203, 213, 225, 0.25);
+  --surface-shadow: 0 16px 44px rgba(0, 0, 0, 0.7),
+                     0 4px 12px rgba(203, 213, 225, 0.15),
+                     inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 :root[data-theme='light'] {
-  --app-bg: radial-gradient(circle at 5% 0%, #ecfeff 0%, #dbeafe 44%, #f8fafc 100%);
-  --surface-bg: linear-gradient(140deg, rgba(30, 41, 59, 0.86), rgba(15, 23, 42, 0.93));
-  --surface-border: rgba(14, 165, 233, 0.26);
-  --surface-shadow: 0 14px 36px rgba(15, 23, 42, 0.25);
+  --app-bg: radial-gradient(circle at 5% 0%, #f0f9ff 0%, #e0f2fe 44%, #ffffff 100%);
+  --surface-bg: linear-gradient(140deg, 
+    rgba(226, 232, 240, 0.75) 0%, 
+    rgba(203, 213, 225, 0.85) 50%, 
+    rgba(186, 230, 253, 0.65) 100%);
+  --surface-border: rgba(14, 165, 233, 0.35);
+  --surface-shadow: 0 14px 36px rgba(15, 23, 42, 0.25),
+                     0 4px 12px rgba(100, 116, 139, 0.2),
+                     inset 0 1px 3px rgba(255, 255, 255, 0.8);
 }
 
 html,

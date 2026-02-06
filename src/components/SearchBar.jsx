@@ -212,7 +212,7 @@ function SearchBar({ resetSignal = 0 }) {
 
       {/* Dropdown Suggestions */}
       {showDropdown && (suggestions || shouldShowHistory) && (
-        <div className="absolute top-full mt-2 w-full bg-[#0b1a22] border border-cyan-600/40 rounded-2xl shadow-2xl shadow-cyan-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full mt-2 w-full bg-[#0b1a22] border border-cyan-600/40 rounded-2xl shadow-2xl shadow-cyan-500/20 overflow-hidden z-[9999] max-h-96 overflow-y-auto">
           {/* Search History (subtle, only when input is empty/short) */}
           {shouldShowHistory && !suggestions && (
             <div className="p-3">

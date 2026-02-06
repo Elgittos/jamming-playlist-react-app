@@ -19,7 +19,7 @@ function SideMenu({ theme, onThemeChange, onHome }) {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
   });
-  const [isDesktopExpanded, setIsDesktopExpanded] = useState(false);
+  const [isDesktopExpanded, setIsDesktopExpanded] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState(false);
   const collapseTimeoutRef = useRef(null);
@@ -88,20 +88,16 @@ function SideMenu({ theme, onThemeChange, onHome }) {
 
   const onDesktopMouseEnter = () => {
     if (isMobileOrTablet) return;
-    if (collapseTimeoutRef.current) {
-      clearTimeout(collapseTimeoutRef.current);
-      collapseTimeoutRef.current = null;
-    }
-    setIsDesktopExpanded(true);
+    // Desktop menu is always expanded, no need to toggle
   };
 
   const onDesktopMouseLeave = () => {
     if (isMobileOrTablet) return;
+    // Desktop menu stays expanded, only close theme submenu
     if (collapseTimeoutRef.current) {
       clearTimeout(collapseTimeoutRef.current);
     }
     collapseTimeoutRef.current = window.setTimeout(() => {
-      setIsDesktopExpanded(false);
       setIsThemeSubmenuOpen(false);
       collapseTimeoutRef.current = null;
     }, 180);
