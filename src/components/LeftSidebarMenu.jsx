@@ -113,7 +113,7 @@ function LeftSidebarMenu() {
                 </div>
                 <span
                   className={`whitespace-nowrap font-medium transition-all duration-300 ${
-                    isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 absolute'
+                    isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 w-0 overflow-hidden'
                   }`}
                 >
                   {item.label}
