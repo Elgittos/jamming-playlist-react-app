@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchSpotify, isAuthenticated, playTrack } from '../api';
+import { searchSpotify, isAuthenticated } from '../api';
+import { usePlayer } from '../contexts/PlayerContext';
 
 function SearchBar() {
   const [query, setQuery] = useState('');
@@ -7,8 +8,11 @@ function SearchBar() {
   const [suggestions, setSuggestions] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const dropdownRef = useRef(null);
   const searchTimeoutRef = useRef(null);
+  
+  const { searchHistory, addToSearchHistory, playTrack } = usePlayer();
 
   // Fetch suggestions when query changes
   useEffect(() => {
@@ -29,6 +33,7 @@ function SearchBar() {
         const results = await searchSpotify(query, 4);
         setSuggestions(results);
         setShowDropdown(true);
+        setShowHistory(false);
       } catch (error) {
         console.error('Search error:', error);
         setSuggestions(null);
@@ -49,6 +54,7 @@ function SearchBar() {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+        setShowHistory(false);
       }
     };
 
@@ -59,8 +65,9 @@ function SearchBar() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query);
+      addToSearchHistory(query);
       setShowDropdown(false);
+      setShowHistory(false);
     }
   };
 
@@ -68,7 +75,15 @@ function SearchBar() {
     // Handle different types of clicks
     if (type === 'track') {
       try {
-        await playTrack(item.uri);
+        const trackData = {
+          id: item.id,
+          uri: item.uri,
+          title: item.name,
+          artist: item.artists.map(a => a.name).join(', '),
+          album: item.album.name,
+          albumArt: item.album.images[0]?.url || 'https://via.placeholder.com/200/5B21B6/FFFFFF?text=No+Image'
+        };
+        await playTrack(item.uri, trackData);
         console.log('Playing track:', item.name);
       } catch (error) {
         console.error('Failed to play:', error);
@@ -82,6 +97,21 @@ function SearchBar() {
       window.open(item.external_urls.spotify, '_blank');
     }
     setShowDropdown(false);
+    setShowHistory(false);
+  };
+
+  const handleHistoryClick = (historyQuery) => {
+    setQuery(historyQuery);
+    setShowHistory(false);
+  };
+
+  const handleFocus = () => {
+    setIsExpanded(true);
+    if (suggestions) {
+      setShowDropdown(true);
+    } else if (searchHistory.length > 0 && query.trim().length === 0) {
+      setShowHistory(true);
+    }
   };
 
   return (
@@ -92,10 +122,7 @@ function SearchBar() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              setIsExpanded(true);
-              if (suggestions) setShowDropdown(true);
-            }}
+            onFocus={handleFocus}
             placeholder="Search for songs, artists, or albums..."
             className={`w-full py-3 px-6 pr-12 rounded-full bg-purple-900/50 border-2 border-purple-700/50 text-white placeholder-purple-300/60 focus:outline-none focus:border-fuchsia-500 focus:bg-purple-900/70 transition-all duration-300 ${
               isExpanded ? 'shadow-lg shadow-fuchsia-500/20' : ''
@@ -152,6 +179,27 @@ function SearchBar() {
           )}
         </div>
       </form>
+
+      {/* Search History Dropdown */}
+      {showHistory && searchHistory.length > 0 && (
+        <div className="absolute top-full mt-2 w-full bg-purple-900/95 border border-purple-700/50 rounded-xl shadow-lg overflow-hidden z-50 backdrop-blur-sm">
+          <div className="p-2">
+            <h3 className="text-xs font-semibold text-purple-300 uppercase mb-1 px-2">Recent Searches</h3>
+            {searchHistory.map((historyQuery, index) => (
+              <button
+                key={index}
+                onClick={() => handleHistoryClick(historyQuery)}
+                className="w-full flex items-center gap-2 p-2 hover:bg-fuchsia-800/20 rounded-lg transition-all text-left group"
+              >
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-white text-sm group-hover:text-fuchsia-300">{historyQuery}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Dropdown Suggestions */}
       {showDropdown && suggestions && (

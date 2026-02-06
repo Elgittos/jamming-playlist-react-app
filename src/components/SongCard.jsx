@@ -1,10 +1,12 @@
-import { playTrack } from '../api';
+import { usePlayer } from '../contexts/PlayerContext';
 
 function SongCard({ song }) {
+  const { playTrack } = usePlayer();
+
   const handlePlay = async () => {
     if (song.uri) {
       try {
-        await playTrack(song.uri);
+        await playTrack(song.uri, song);
         console.log('Playing:', song.title);
       } catch (error) {
         console.error('Failed to play track:', error);
@@ -16,12 +18,12 @@ function SongCard({ song }) {
   return (
     <div 
       onClick={handlePlay}
-      className="bg-gradient-to-br from-violet-800 to-purple-900 p-3 sm:p-4 rounded-xl w-[160px] sm:w-[180px] lg:w-[200px] h-[240px] sm:h-[260px] lg:h-[280px] flex-shrink-0 hover:from-violet-700 hover:to-purple-800 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-purple-500/50 hover:scale-105 border border-violet-700/30 flex flex-col"
+      className="bg-gradient-to-br from-violet-800 to-purple-900 p-2.5 sm:p-3 rounded-xl w-[150px] sm:w-[170px] lg:w-[190px] h-[220px] sm:h-[240px] lg:h-[260px] flex-shrink-0 hover:from-violet-700 hover:to-purple-800 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-purple-500/50 hover:scale-105 border border-violet-700/30 flex flex-col"
     >
       <img 
         src={song.albumArt} 
         alt={song.title} 
-        className="w-full h-[120px] sm:h-[140px] lg:h-[160px] object-cover rounded-lg mb-3 shadow-md"
+        className="w-full h-[110px] sm:h-[130px] lg:h-[150px] object-cover rounded-lg mb-2.5 shadow-md"
       />
       <div className="flex-1 flex flex-col justify-between">
         <div>
