@@ -16,9 +16,17 @@ function SearchBar() {
 
   // Fetch suggestions when query changes
   useEffect(() => {
-    if (!query.trim() || !isAuthenticated()) {
+    const trimmed = query.trim();
+    const authed = isAuthenticated();
+
+    if (!trimmed || trimmed.length < 2 || !authed) {
       setSuggestions(null);
-      setShowDropdown(false);
+      setIsLoading(false);
+      if (shouldShowHistory) {
+        setShowDropdown(true);
+      } else {
+        setShowDropdown(false);
+      }
       return;
     }
 
@@ -47,7 +55,7 @@ function SearchBar() {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [query]);
+  }, [query, shouldShowHistory]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -114,11 +122,18 @@ function SearchBar() {
     }
   };
 
+  const handleHistoryClick = (historyItem) => {
+    addSearchQuery(historyItem);
+    setQuery(historyItem);
+    setShowDropdown(true);
+  };
+
   return (
     <div ref={dropdownRef} className="w-full relative">
       <form onSubmit={handleSubmit}>
         <div className="relative group">
           <input
+            ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -164,7 +179,11 @@ function SearchBar() {
               onClick={() => {
                 setQuery('');
                 setSuggestions(null);
-                setShowDropdown(false);
+                if (shouldShowHistory) {
+                  setShowDropdown(true);
+                } else {
+                  setShowDropdown(false);
+                }
               }}
               className="absolute right-14 top-1/2 -translate-y-1/2 p-1 text-purple-300 hover:text-white transition-colors"
             >
@@ -202,10 +221,31 @@ function SearchBar() {
       )}
 
       {/* Dropdown Suggestions */}
-      {showDropdown && suggestions && (
+      {showDropdown && (suggestions || shouldShowHistory) && (
         <div className="absolute top-full mt-2 w-full bg-purple-900 border-2 border-fuchsia-600/50 rounded-2xl shadow-2xl shadow-fuchsia-500/20 overflow-hidden z-50 max-h-96 overflow-y-auto">
+          {/* Search History (subtle, only when input is empty/short) */}
+          {shouldShowHistory && !suggestions && (
+            <div className="p-3">
+              <h3 className="text-[11px] font-bold text-purple-300 uppercase mb-2 px-2">Recent searches</h3>
+              <div className="space-y-1">
+                {searchHistory.slice(0, 4).map((historyItem) => (
+                  <button
+                    key={historyItem}
+                    onClick={() => handleHistoryClick(historyItem)}
+                    className="w-full flex items-center gap-2.5 p-2 hover:bg-fuchsia-800/20 rounded-lg transition-all duration-200 text-left"
+                  >
+                    <svg className="w-4 h-4 text-purple-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-5.2-5.2m2.2-5.3a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span className="text-sm text-white/90 truncate">{historyItem}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Tracks Section */}
-          {suggestions.tracks?.items?.length > 0 && (
+          {suggestions?.tracks?.items?.length > 0 && (
             <div className="p-3">
               <h3 className="text-xs font-bold text-fuchsia-400 uppercase mb-2 px-2">Tracks</h3>
               {suggestions.tracks.items.map((track) => (
@@ -234,7 +274,7 @@ function SearchBar() {
           )}
 
           {/* Artists Section */}
-          {suggestions.artists?.items?.length > 0 && (
+          {suggestions?.artists?.items?.length > 0 && (
             <div className="p-3 border-t border-purple-700/50">
               <h3 className="text-xs font-bold text-fuchsia-400 uppercase mb-2 px-2">Artists</h3>
               {suggestions.artists.items.map((artist) => (
@@ -263,7 +303,7 @@ function SearchBar() {
           )}
 
           {/* Albums Section */}
-          {suggestions.albums?.items?.length > 0 && (
+          {suggestions?.albums?.items?.length > 0 && (
             <div className="p-3 border-t border-purple-700/50">
               <h3 className="text-xs font-bold text-fuchsia-400 uppercase mb-2 px-2">Albums</h3>
               {suggestions.albums.items.map((album) => (
@@ -292,7 +332,7 @@ function SearchBar() {
           )}
 
           {/* No results */}
-          {suggestions.tracks?.items?.length === 0 && 
+          {suggestions && suggestions.tracks?.items?.length === 0 && 
            suggestions.artists?.items?.length === 0 && 
            suggestions.albums?.items?.length === 0 && (
             <div className="p-6 text-center text-gray-400">

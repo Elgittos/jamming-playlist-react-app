@@ -20,19 +20,48 @@ function PlayingNow() {
     }
   };
 
-  const handleNext = async () => {
-    try {
-      await skipToNext();
-    } catch (error) {
-      console.error('Next error:', error);
-    }
+  const getMsFromClientX = (clientX) => {
+    const el = progressBarRef.current;
+    if (!el || !durationMs) return 0;
+
+    const rect = el.getBoundingClientRect();
+    const ratio = (clientX - rect.left) / rect.width;
+    const clampedRatio = Math.max(0, Math.min(1, ratio));
+    return Math.round(clampedRatio * durationMs);
   };
 
-  const handlePrevious = async () => {
+  const handleScrubStart = (event) => {
+    if (!durationMs) return;
+
+    event.preventDefault();
+    activePointerIdRef.current = event.pointerId;
+    progressBarRef.current?.setPointerCapture?.(event.pointerId);
+    setIsScrubbing(true);
+    setScrubMs(getMsFromClientX(event.clientX));
+  };
+
+  const handleScrubMove = (event) => {
+    if (!isScrubbing) return;
+    if (activePointerIdRef.current !== event.pointerId) return;
+    event.preventDefault();
+    setScrubMs(getMsFromClientX(event.clientX));
+  };
+
+  const handleScrubEnd = async (event) => {
+    if (!isScrubbing) return;
+    if (activePointerIdRef.current !== event.pointerId) return;
+
+    event.preventDefault();
+    const finalMs = getMsFromClientX(event.clientX);
+    setScrubMs(finalMs);
+    setIsScrubbing(false);
+    activePointerIdRef.current = null;
+
     try {
-      await skipToPrevious();
+      // Spec requirement: seek and resume playback on release
+      await seekToMs(finalMs, { resume: true });
     } catch (error) {
-      console.error('Previous error:', error);
+      console.error('Seek error:', error);
     }
   };
 

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { getPlaylistTracks, playTrack } from '../api';
+import { getPlaylistTracks } from '../api';
+import { usePlayer } from '../hooks/usePlayer';
 
 function YourPlaylist({ selectedPlaylistId }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { playTrack } = usePlayer();
 
   useEffect(() => {
     async function fetchPlaylistTracks() {
@@ -32,7 +34,15 @@ function YourPlaylist({ selectedPlaylistId }) {
 
   const handleTrackClick = async (trackUri) => {
     try {
-      await playTrack(trackUri);
+      const track = tracks.find((t) => t.uri === trackUri);
+      await playTrack(trackUri, track ? {
+        id: track.id,
+        uri: track.uri,
+        title: track.name,
+        artist: track.artists,
+        album: track.album,
+        albumArt: track.albumImage
+      } : null);
     } catch (error) {
       console.error('Error playing track:', error);
       alert('Failed to play track. Make sure Spotify is active!');
@@ -46,8 +56,8 @@ function YourPlaylist({ selectedPlaylistId }) {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-5 sm:p-8 lg:p-10 h-full border border-emerald-800/30 flex flex-col">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6">Playlist Tracks</h2>
+    <div className="w-full bg-gradient-to-br from-emerald-900 via-green-950 to-black rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 h-full border border-emerald-800/30 flex flex-col">
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4">Playlist Tracks</h2>
       
       {/* Loading state */}
       {loading && (
@@ -74,12 +84,12 @@ function YourPlaylist({ selectedPlaylistId }) {
 
       {/* Tracks display */}
       {!loading && !error && tracks.length > 0 && (
-        <div className="space-y-2 max-h-[50vh] sm:max-h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
+        <div className="space-y-1.5 max-h-[50vh] sm:max-h-[650px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-emerald-950">
           {tracks.map((track, index) => (
             <div
               key={track.id + index}
               onClick={() => handleTrackClick(track.uri)}
-              className="bg-emerald-950/50 hover:bg-emerald-900/50 rounded-lg p-3 border border-emerald-800/30 transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-3"
+              className="bg-emerald-950/50 hover:bg-emerald-900/50 rounded-lg p-2.5 border border-emerald-800/30 transition-all duration-300 hover:scale-[1.01] cursor-pointer group flex items-center gap-2.5"
             >
               {/* Track Number */}
               <div className="w-8 text-center text-gray-400 group-hover:text-emerald-300 text-sm">
@@ -91,10 +101,10 @@ function YourPlaylist({ selectedPlaylistId }) {
                 <img
                   src={track.albumImage}
                   alt={track.album}
-                  className="w-12 h-12 rounded object-cover shadow-lg"
+                  className="w-11 h-11 rounded object-cover shadow-lg"
                 />
               ) : (
-                <div className="w-12 h-12 rounded bg-emerald-800 flex items-center justify-center">
+                <div className="w-11 h-11 rounded bg-emerald-800 flex items-center justify-center">
                   <span className="text-xl">🎵</span>
                 </div>
               )}
